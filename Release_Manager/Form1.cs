@@ -92,6 +92,7 @@ namespace Release_Manager
 
         private void button1_Click(object sender, EventArgs e)
         {
+            _logger.Debug("============== Started to create a new report right now. ============== ");
             if (Directory.Exists(textBox1.Text))
             {
                 statusBox.Text += "Solution hash is being calculated, please wait.";
@@ -100,9 +101,10 @@ namespace Release_Manager
                 rm = new RecordsManager(path, xmlPath);
                 rm.SaveXML(xmlPath);
 
-                var solutionHash = GetSolutionHash(path);
+                var solutionHash = rm.SolutionHash;
                 statusBox.Clear();
-                statusBox.Text += $"Solution hash: \r\n {solutionHash}";
+                statusBox.ForeColor = Color.Black;
+                statusBox.Text += $"Solution hash: \r\n{solutionHash}";
                 SetFunctionality(true);
                 button3.Focus();
 
@@ -116,43 +118,7 @@ namespace Release_Manager
             
         }
 
-        private string GetSolutionHash(string path)
-        {
-            string solutionHash = String.Empty;
-            var watch = System.Diagnostics.Stopwatch.StartNew();
-
-            var files = Directory.EnumerateFiles(path, "*", SearchOption.AllDirectories)
-                        .OrderBy(p => p)
-                        .ToList();
-
-            _logger.Debug($"{files.Count} file(s) found in solution.");
-
-            SHA512 sha512 = SHA512.Create();
-            Parallel.ForEach(files, file =>
-            {
-                string fileTmp = file;
-
-                string relativePath = file.Substring(path.Length + 1);
-                byte[] pathBytes = Encoding.UTF8.GetBytes(relativePath.ToLower());
-                sha512.TransformBlock(pathBytes, 0, pathBytes.Length, pathBytes, 0);
-
-                // hash contents
-                byte[] contentBytes = File.ReadAllBytes(fileTmp);
-                if (file == files.Last())
-                {
-                    sha512.TransformFinalBlock(contentBytes, 0, contentBytes.Length);
-                    solutionHash = BitConverter.ToString(sha512.Hash).Replace("-", "").ToLower();
-                }
-                else
-                    sha512.TransformBlock(contentBytes, 0, contentBytes.Length, contentBytes, 0);
-            });
-            
-            watch.Stop();
-            var elapsedTime = watch.ElapsedMilliseconds;
-            _logger.Debug("SHA512 solution calculation took: {elapsedTime} miliseconds.", elapsedTime);
-            statusBox.Text = String.Empty;
-            return solutionHash;
-        }
+        
 
         private void SetFunctionality(bool enable)
         {
@@ -172,7 +138,7 @@ namespace Release_Manager
         {
             statusBox.Clear();
             SetFunctionality(false);
-            textBox1.Text = (comboBox1.SelectedItem as SolutionsConfig).SolutionPath + "\\" + (comboBox1.SelectedItem as SolutionsConfig).SolutionName;
+            textBox1.Text = Path.Combine((comboBox1.SelectedItem as SolutionsConfig).SolutionPath, (comboBox1.SelectedItem as SolutionsConfig).SolutionName);
             textBox2.Focus();
 
         }
@@ -280,12 +246,14 @@ namespace Release_Manager
         {
             statusBox.ForeColor = Color.Green;
             statusBox.Text = message;
+
         }
 
         private void MessageError(string message)
         {
             statusBox.ForeColor = Color.Red;
             statusBox.Text = message;
+
         }
 
     }

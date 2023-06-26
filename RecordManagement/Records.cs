@@ -49,11 +49,10 @@ namespace FileScanner
             if (directory == "" || !Directory.Exists(directory))
             {
                 ret._logger.Warning("No directory path is supplied.");
-                ret = null;
             }
             else
             {
-                entries = Directory.GetFileSystemEntries(directory, "*", SearchOption.AllDirectories);
+                entries = Directory.EnumerateFiles(directory, "*", SearchOption.AllDirectories).ToArray();
 
                 foreach (string file in entries)
                 {
@@ -92,7 +91,7 @@ namespace FileScanner
                 }
                 watch.Stop();
                 var elapsedTime = watch.ElapsedMilliseconds;
-                ret._logger.Debug("ReadDirectory method took: {elapsedTime} miliseconds while reading of {entries.Length}.", elapsedTime, entries?.Length);
+                ret._logger.Debug($"ReadDirectory method took: {elapsedTime} miliseconds while reading of {entries.Length} files.", elapsedTime, entries.Length);
             }
             
             return ret;
