@@ -1,40 +1,49 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
+using Logging;
+using Serilog;
+using Serilog.Core;
+
 
 namespace FileScanner
 {
-  [Serializable]
-  public class Record
-  {
-    public string Hash;
-    public string Filename;
-    public string shortFileName;
-    public int Version;
-    public DateTime CreateDate;
-    public DateTime ModificationDate;
-
-    [XmlIgnore]
-    public bool Changed = false;
-
-    public override bool Equals(object obj)
+    [Serializable]
+    public class Record
     {
-      if(obj is Record r)
-      {
-        return r.Filename == Filename;
-      }
-      return false;
-    }
+        public string Hash;
+        public string Filename;
+        public string shortFileName;
+        public int Version;
+        public DateTime CreateDate;
+        public DateTime ModificationDate;
+        
+        private readonly ILogger _logger = new SerilogClass().logger;
 
-    public override int GetHashCode()
-    {
-      int hashCode = -2079975871;
-      hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Filename);
-      return hashCode;
-    }
+
+        [XmlIgnore]
+        public bool Changed = false;
+
+        public override bool Equals(object obj)
+        {
+            if(obj is Record r)
+            {
+                return r.Filename == Filename;
+            }
+            return false;
+        }
+
+        public override int GetHashCode()
+        {
+            int hashCode = -2079975871;
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Filename);
+            // _logger.Debug($"Hash code of {Filename} computed: {hashCode}.");
+            return hashCode;
+        }
 
         public override string ToString()
         {

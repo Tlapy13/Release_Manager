@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -52,13 +53,13 @@ namespace Release_Manager
                 throw new Exception("invalid object provided, please implement new class if needed");
 
         }
-        private void WritteRM(RecordsManager rm)
+        private async Task WritteRM(RecordsManager rm)
         {
-            WritteRecordData("Removed files: ", rm.RemovedFiles());
-            WritteRecordData("Changed files: ", rm.ChangedFiles());
-            WritteRecordData("New files: ", rm.NewFiles());
+            WritteRecordData("Removed files: ", await rm.RemovedFiles());
+            WritteRecordData("Changed files: ", await rm.ChangedFiles());
+            WritteRecordData("New files: ", await rm.NewFiles());
 
-            if (rm.RemovedFiles().Count == 0 && rm.ChangedFiles().Count == 0 && rm.NewFiles().Count == 0)
+            if ((await rm.RemovedFiles()).Count == 0 && (await rm.ChangedFiles()).Count == 0 && (await rm.NewFiles()).Count == 0)
             {
                 WriteLine("no changes detected");
             }

@@ -44,21 +44,21 @@ namespace Release_Manager
 
     
 
-        private void ShowViewResult()
+        private async Task ShowViewResult()
         {
             textBox2.Clear();
 
             if (DeletedChk.Checked)
-                Print("Removed files: ", rm.RemovedFiles());
+                Print("Removed files: ", await rm.RemovedFiles());
 
             if (ChangedChk.Checked)
-                Print("Changed files: ", rm.ChangedFiles());
+                Print("Changed files: ", await rm.ChangedFiles());
 
             if (AddedChk.Checked)
-                Print("New files: ", rm.NewFiles());
+                Print("New files: ", await rm.NewFiles());
 
             if (UnchangedChk.Checked)
-                Print("Unchanged files: ", rm.UnchangedFiles());
+                Print("Unchanged files: ", await rm.UnchangedFiles());
 
             textBox2.SelectionStart = 0;
             textBox2.ScrollToCaret();

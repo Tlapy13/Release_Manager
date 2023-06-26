@@ -49,12 +49,13 @@ namespace Release_Manager
             this.quitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.label5 = new System.Windows.Forms.Label();
+            this.statusBox = new System.Windows.Forms.TextBox();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(104, 210);
+            this.button1.Location = new System.Drawing.Point(395, 212);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(221, 23);
             this.button1.TabIndex = 0;
@@ -68,12 +69,12 @@ namespace Release_Manager
             this.textBox1.Location = new System.Drawing.Point(104, 48);
             this.textBox1.Name = "textBox1";
             this.textBox1.ReadOnly = true;
-            this.textBox1.Size = new System.Drawing.Size(221, 20);
+            this.textBox1.Size = new System.Drawing.Size(512, 20);
             this.textBox1.TabIndex = 1;
             // 
             // button2
             // 
-            this.button2.Location = new System.Drawing.Point(104, 268);
+            this.button2.Location = new System.Drawing.Point(395, 270);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(221, 23);
             this.button2.TabIndex = 2;
@@ -83,7 +84,7 @@ namespace Release_Manager
             // 
             // button3
             // 
-            this.button3.Location = new System.Drawing.Point(104, 239);
+            this.button3.Location = new System.Drawing.Point(395, 241);
             this.button3.Name = "button3";
             this.button3.Size = new System.Drawing.Size(221, 23);
             this.button3.TabIndex = 3;
@@ -99,7 +100,7 @@ namespace Release_Manager
             this.comboBox1.ForeColor = System.Drawing.SystemColors.WindowText;
             this.comboBox1.Location = new System.Drawing.Point(104, 11);
             this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(221, 21);
+            this.comboBox1.Size = new System.Drawing.Size(512, 21);
             this.comboBox1.TabIndex = 4;
             this.comboBox1.SelectedIndexChanged += new System.EventHandler(this.comboBox1_SelectedIndexChanged);
             // 
@@ -127,8 +128,9 @@ namespace Release_Manager
             this.textBox2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.textBox2.Location = new System.Drawing.Point(104, 91);
             this.textBox2.Name = "textBox2";
-            this.textBox2.Size = new System.Drawing.Size(221, 20);
+            this.textBox2.Size = new System.Drawing.Size(512, 20);
             this.textBox2.TabIndex = 7;
+            this.textBox2.TextChanged += new System.EventHandler(this.textBox2_TextChanged);
             // 
             // label3
             // 
@@ -155,7 +157,7 @@ namespace Release_Manager
             this.textBox3.Location = new System.Drawing.Point(104, 124);
             this.textBox3.Multiline = true;
             this.textBox3.Name = "textBox3";
-            this.textBox3.Size = new System.Drawing.Size(221, 67);
+            this.textBox3.Size = new System.Drawing.Size(512, 67);
             this.textBox3.TabIndex = 10;
             // 
             // menuStrip1
@@ -164,9 +166,9 @@ namespace Release_Manager
             this.menuStrip1.Dock = System.Windows.Forms.DockStyle.Right;
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileToolStripMenuItem});
-            this.menuStrip1.Location = new System.Drawing.Point(331, 0);
+            this.menuStrip1.Location = new System.Drawing.Point(628, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(34, 305);
+            this.menuStrip1.Size = new System.Drawing.Size(34, 367);
             this.menuStrip1.TabIndex = 11;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -180,33 +182,34 @@ namespace Release_Manager
             this.fileToolStripMenuItem.ImageAlign = System.Drawing.ContentAlignment.TopCenter;
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
             this.fileToolStripMenuItem.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.fileToolStripMenuItem.Size = new System.Drawing.Size(113, 19);
+            this.fileToolStripMenuItem.Size = new System.Drawing.Size(21, 19);
             this.fileToolStripMenuItem.Text = "...";
             this.fileToolStripMenuItem.TextAlign = System.Drawing.ContentAlignment.TopLeft;
+            this.fileToolStripMenuItem.Click += new System.EventHandler(this.fileToolStripMenuItem_Click);
             // 
             // settingsToolStripMenuItem
             // 
             this.settingsToolStripMenuItem.Name = "settingsToolStripMenuItem";
-            this.settingsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.settingsToolStripMenuItem.Size = new System.Drawing.Size(116, 22);
             this.settingsToolStripMenuItem.Text = "&Settings";
-            this.settingsToolStripMenuItem.Click += new System.EventHandler(this.settingsToolStripMenuItem_Click);
+            this.settingsToolStripMenuItem.Click += new System.EventHandler(this.OpenSettings);
             // 
             // aboutToolStripMenuItem
             // 
             this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
-            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(116, 22);
             this.aboutToolStripMenuItem.Text = "&About";
             this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
             // 
             // toolStripMenuItem1
             // 
             this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-            this.toolStripMenuItem1.Size = new System.Drawing.Size(177, 6);
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(113, 6);
             // 
             // quitToolStripMenuItem
             // 
             this.quitToolStripMenuItem.Name = "quitToolStripMenuItem";
-            this.quitToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.quitToolStripMenuItem.Size = new System.Drawing.Size(116, 22);
             this.quitToolStripMenuItem.Text = "&Quit";
             this.quitToolStripMenuItem.Click += new System.EventHandler(this.quitToolStripMenuItem_Click);
             // 
@@ -223,12 +226,24 @@ namespace Release_Manager
             this.label5.Size = new System.Drawing.Size(0, 13);
             this.label5.TabIndex = 12;
             // 
+            // statusBox
+            // 
+            this.statusBox.BackColor = System.Drawing.SystemColors.Info;
+            this.statusBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.statusBox.Location = new System.Drawing.Point(15, 299);
+            this.statusBox.Multiline = true;
+            this.statusBox.Name = "statusBox";
+            this.statusBox.ReadOnly = true;
+            this.statusBox.Size = new System.Drawing.Size(601, 56);
+            this.statusBox.TabIndex = 36;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.AliceBlue;
-            this.ClientSize = new System.Drawing.Size(365, 305);
+            this.ClientSize = new System.Drawing.Size(662, 367);
+            this.Controls.Add(this.statusBox);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.comboBox1);
             this.Controls.Add(this.textBox3);
@@ -276,6 +291,7 @@ namespace Release_Manager
         private System.Windows.Forms.ToolStripMenuItem quitToolStripMenuItem;
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
         private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.TextBox statusBox;
     }
 }
 

@@ -13,7 +13,7 @@ namespace Release_Manager
 
         public override string ToString()
         {
-            return SolutionName;
+            return $"{SolutionName} : {SolutionPath}";
         }
     }
 }

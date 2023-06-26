@@ -9,12 +9,16 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
+using Serilog;
+using Logging;
+using System.Runtime.CompilerServices;
 
 namespace FileScanner
 {
     [Serializable]
     public class Records : HashSet<Record>, ISerializable
     {
+        private readonly ILogger _logger = new SerilogClass().logger;
 
         public void SaveToXML(string file)
         {
@@ -39,44 +43,58 @@ namespace FileScanner
 
         public static Records ReadDirectory(string directory)
         {
+            var watch = System.Diagnostics.Stopwatch.StartNew();
             Records ret = new Records();
-            string[] entries = Directory.GetFileSystemEntries(directory, "*", SearchOption.AllDirectories);
-
-            foreach (string file in entries)
+            string[] entries;
+            if (directory == "" || !Directory.Exists(directory))
             {
-                string hash;
-                if (IsDir(file))
-                {
-                    hash = "Directory";
-                }
-                else
-                {
-                    hash = CalculateMD5(file);
-                }
-                Record record = new Record();
-                FileInfo fi = new FileInfo(file);
-
-                
-
-                string dir = Path.GetDirectoryName(file);
- 
-                if (directory != dir)
-                {
-                    //record.shortFileName = Path.Combine(dir, fi.Name);
-                    string result = dir.Substring(directory.Length).TrimStart(Path.DirectorySeparatorChar);
-                    record.shortFileName = Path.Combine(result, fi.Name);
-                }
-                else
-                    record.shortFileName = fi.Name;
-
-
-                record.Filename = file;
-                record.Hash = hash;
-                record.CreateDate = fi.CreationTime;
-                record.ModificationDate = fi.LastWriteTime;
-                record.Version = 0;
-                ret.Add(record);
+                ret._logger.Warning("No directory path is supplied.");
+                ret = null;
             }
+            else
+            {
+                entries = Directory.GetFileSystemEntries(directory, "*", SearchOption.AllDirectories);
+
+                foreach (string file in entries)
+                {
+                    string hash;
+                    if (IsDir(file))
+                    {
+                        hash = "Directory";
+                    }
+                    else
+                    {
+                        hash = CalculateMD5(file);
+                    }
+                    Record record = new Record();
+                    FileInfo fi = new FileInfo(file);
+
+
+
+                    string dir = Path.GetDirectoryName(file);
+
+                    if (directory != dir)
+                    {
+                        //record.shortFileName = Path.Combine(dir, fi.Name);
+                        string result = dir.Substring(directory.Length).TrimStart(Path.DirectorySeparatorChar);
+                        record.shortFileName = Path.Combine(result, fi.Name);
+                    }
+                    else
+                        record.shortFileName = fi.Name;
+
+
+                    record.Filename = file;
+                    record.Hash = hash;
+                    record.CreateDate = fi.CreationTime;
+                    record.ModificationDate = fi.LastWriteTime;
+                    record.Version = 0;
+                    ret.Add(record);
+                }
+                watch.Stop();
+                var elapsedTime = watch.ElapsedMilliseconds;
+                ret._logger.Debug("ReadDirectory method took: {elapsedTime} miliseconds while reading of {entries.Length}.", elapsedTime, entries?.Length);
+            }
+            
             return ret;
         }
 
