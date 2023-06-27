@@ -22,9 +22,6 @@ namespace FileScanner
         public DateTime CreateDate;
         public DateTime ModificationDate;
         
-        private readonly ILogger _logger = new SerilogClass().logger;
-
-
         [XmlIgnore]
         public bool Changed = false;
 
@@ -41,7 +38,6 @@ namespace FileScanner
         {
             int hashCode = -2079975871;
             hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Filename);
-            // _logger.Debug($"Hash code of {Filename} computed: {hashCode}.");
             return hashCode;
         }
 

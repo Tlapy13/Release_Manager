@@ -44,9 +44,6 @@
             this.logPathTextBox = new System.Windows.Forms.TextBox();
             this.button5 = new System.Windows.Forms.Button();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
-            this.solutionNameDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.solutionPathDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.solutionsConfigBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.label2 = new System.Windows.Forms.Label();
             this.button4 = new System.Windows.Forms.Button();
             this.logPathBrowserDialog = new System.Windows.Forms.FolderBrowserDialog();
@@ -64,6 +61,9 @@
             this.xmlPathTextBox = new System.Windows.Forms.TextBox();
             this.xmlPathBrowserDialog = new System.Windows.Forms.FolderBrowserDialog();
             this.xmlPathDialog = new System.Windows.Forms.OpenFileDialog();
+            this.solutionNameDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.solutionPathDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.solutionsConfigBindingSource = new System.Windows.Forms.BindingSource(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.solutionsConfigBindingSource)).BeginInit();
             this.SuspendLayout();
@@ -152,7 +152,6 @@
             this.logPathLabel.Size = new System.Drawing.Size(52, 13);
             this.logPathLabel.TabIndex = 22;
             this.logPathLabel.Text = "Log path:";
-            this.logPathLabel.MouseHover += new System.EventHandler(this.ShowTooltip);
             // 
             // logPathTextBox
             // 
@@ -210,25 +209,6 @@
             this.dataGridView1.Size = new System.Drawing.Size(570, 140);
             this.dataGridView1.TabIndex = 27;
             this.dataGridView1.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.SelectDataGridViewRow);
-            // 
-            // solutionNameDataGridViewTextBoxColumn
-            // 
-            this.solutionNameDataGridViewTextBoxColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-            this.solutionNameDataGridViewTextBoxColumn.DataPropertyName = "SolutionName";
-            this.solutionNameDataGridViewTextBoxColumn.HeaderText = "Folder name";
-            this.solutionNameDataGridViewTextBoxColumn.Name = "solutionNameDataGridViewTextBoxColumn";
-            this.solutionNameDataGridViewTextBoxColumn.Width = 150;
-            // 
-            // solutionPathDataGridViewTextBoxColumn
-            // 
-            this.solutionPathDataGridViewTextBoxColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.solutionPathDataGridViewTextBoxColumn.DataPropertyName = "SolutionPath";
-            this.solutionPathDataGridViewTextBoxColumn.HeaderText = "Folder path";
-            this.solutionPathDataGridViewTextBoxColumn.Name = "solutionPathDataGridViewTextBoxColumn";
-            // 
-            // solutionsConfigBindingSource
-            // 
-            this.solutionsConfigBindingSource.DataSource = typeof(Release_Manager.SolutionsConfig);
             // 
             // label2
             // 
@@ -333,9 +313,9 @@
             this.label5.AutoSize = true;
             this.label5.Location = new System.Drawing.Point(12, 312);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(56, 13);
+            this.label5.Size = new System.Drawing.Size(78, 13);
             this.label5.TabIndex = 38;
-            this.label5.Text = "XML path:";
+            this.label5.Text = "XML final path:";
             // 
             // xmlPathTextBox
             // 
@@ -345,6 +325,25 @@
             this.xmlPathTextBox.Name = "xmlPathTextBox";
             this.xmlPathTextBox.Size = new System.Drawing.Size(455, 20);
             this.xmlPathTextBox.TabIndex = 37;
+            // 
+            // solutionNameDataGridViewTextBoxColumn
+            // 
+            this.solutionNameDataGridViewTextBoxColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            this.solutionNameDataGridViewTextBoxColumn.DataPropertyName = "SolutionName";
+            this.solutionNameDataGridViewTextBoxColumn.HeaderText = "Folder name";
+            this.solutionNameDataGridViewTextBoxColumn.Name = "solutionNameDataGridViewTextBoxColumn";
+            this.solutionNameDataGridViewTextBoxColumn.Width = 150;
+            // 
+            // solutionPathDataGridViewTextBoxColumn
+            // 
+            this.solutionPathDataGridViewTextBoxColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.solutionPathDataGridViewTextBoxColumn.DataPropertyName = "SolutionPath";
+            this.solutionPathDataGridViewTextBoxColumn.HeaderText = "Folder path";
+            this.solutionPathDataGridViewTextBoxColumn.Name = "solutionPathDataGridViewTextBoxColumn";
+            // 
+            // solutionsConfigBindingSource
+            // 
+            this.solutionsConfigBindingSource.DataSource = typeof(Release_Manager.SolutionsConfig);
             // 
             // Settings
             // 

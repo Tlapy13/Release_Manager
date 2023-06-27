@@ -12,6 +12,7 @@ using System.Xml.Serialization;
 using Serilog;
 using Logging;
 using System.Runtime.CompilerServices;
+using System.Security.Policy;
 
 namespace FileScanner
 {
@@ -43,55 +44,55 @@ namespace FileScanner
 
         public static Records ReadDirectory(string directory)
         {
-            var watch = System.Diagnostics.Stopwatch.StartNew();
             Records ret = new Records();
-            string[] entries;
+
             if (directory == "" || !Directory.Exists(directory))
-            {
                 ret._logger.Warning("No directory path is supplied.");
-            }
             else
             {
-                entries = Directory.EnumerateFiles(directory, "*", SearchOption.AllDirectories).ToArray();
+                string[] entries = Directory.EnumerateFiles(directory, "*", SearchOption.AllDirectories).ToArray();
+                Record record;
+                FileInfo fi;
+                string hash;
 
                 foreach (string file in entries)
                 {
-                    string hash;
-                    if (IsDir(file))
+                    try
                     {
-                        hash = "Directory";
+                        record = new Record();
+                        fi = new FileInfo(file);
+
+                        if (new Records().IsDir(file))
+                            hash = "Directory";
+                        else
+                            hash = CalculateMD5(file);
+
+                        string dir = Path.GetDirectoryName(file);
+
+                        if (directory != dir)
+                        {
+                            //record.shortFileName = Path.Combine(dir, fi.Name);
+                            string result = dir.Substring(directory.Length).TrimStart(Path.DirectorySeparatorChar);
+                            record.shortFileName = Path.Combine(result, fi.Name);
+                        }
+                        else
+                            record.shortFileName = fi.Name;
+
+                        record.Filename = file;
+                        record.Hash = hash;
+                        record.CreateDate = fi.CreationTime;
+                        record.ModificationDate = fi.LastWriteTime;
+                        record.Version = 0;
+                        ret.Add(record);
                     }
-                    else
+                    catch (Exception ex)
                     {
-                        hash = CalculateMD5(file);
+                        ret._logger.Error($"Unable to process file due to file name length exceeding 255 characters." +
+                            $"\r\nFile name contains {file.Length} characters." +
+                            $"\r\nSee also error: \r\n{ex.Message}");
+                        return null;
                     }
-                    Record record = new Record();
-                    FileInfo fi = new FileInfo(file);
-
-
-
-                    string dir = Path.GetDirectoryName(file);
-
-                    if (directory != dir)
-                    {
-                        //record.shortFileName = Path.Combine(dir, fi.Name);
-                        string result = dir.Substring(directory.Length).TrimStart(Path.DirectorySeparatorChar);
-                        record.shortFileName = Path.Combine(result, fi.Name);
-                    }
-                    else
-                        record.shortFileName = fi.Name;
-
-
-                    record.Filename = file;
-                    record.Hash = hash;
-                    record.CreateDate = fi.CreationTime;
-                    record.ModificationDate = fi.LastWriteTime;
-                    record.Version = 0;
-                    ret.Add(record);
                 }
-                watch.Stop();
-                var elapsedTime = watch.ElapsedMilliseconds;
-                ret._logger.Debug($"ReadDirectory method took: {elapsedTime} miliseconds while reading of {entries.Length} files.", elapsedTime, entries.Length);
             }
             
             return ret;
@@ -113,10 +114,20 @@ namespace FileScanner
             }
         }
 
-        private static bool IsDir(string entry)
+        public bool IsDir(string entry)
         {
-            FileAttributes attr = File.GetAttributes(entry);
-            return attr.HasFlag(FileAttributes.Directory);
+            bool result;
+            try
+            {
+                FileAttributes attr = File.GetAttributes(entry);
+                result = attr.HasFlag(FileAttributes.Directory);
+            }
+            catch (Exception e) 
+            {
+                _logger.Error($"Path name is probably too long ({entry.Length} characters). Error: {e.Message}");
+                return false;
+            }
+            return result;
         }
 
         static string CalculateMD5(string filename)

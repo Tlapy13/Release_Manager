@@ -25,6 +25,7 @@ namespace Release_Manager
         private readonly ILogger _logger = new SerilogClass().logger;
         private JsonHandler _jsonHandler = new JsonHandler();
         private Settings settingsForm;
+        Configuration configFile = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
 
         public Form1()
         {
@@ -37,34 +38,23 @@ namespace Release_Manager
         {
             try
             {
-                var configFile = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
-
+                DirectoryInfo xmlFolder;
                 string path = Path.GetFullPath(
                     configFile.AppSettings.Settings["solutions_config_path"].Value);
+                string xmlFinal = Directory.GetCurrentDirectory() + "\\xml\\final.xml";
 
                 if (!File.Exists(path))
-                {
                     AddDummyDataToSolutionsConfigs(_jsonHandler);
+
+                if (!Directory.Exists(Directory.GetCurrentDirectory() + "\\xml"))
+                        xmlFolder = Directory.CreateDirectory("xml");
+                
+                if (!File.Exists(xmlFinal))
+                {
+                    File.Create(xmlFinal);
+                    configFile.AppSettings.Settings["final_xml_file_path"].Value = xmlFinal;
                 }
-
                 _logger.Debug($"Attempting to load JSON file stored at: {path}");
-
-                //SolutionsConfig sc = new SolutionsConfig();
-                //sc.SolutionName = "Test";
-                //sc.SolutionPath = @"E:\Download\FileScanner";
-                //solutions.Add(sc);
-
-                //sc = new SolutionsConfig();
-                //sc.SolutionName = "Test2";
-                //sc.SolutionPath = @"E:\Download\Demo_AsyncAwaitSQLClient";
-                //solutions.Add(sc);
-
-                //using (StreamWriter writer = new StreamWriter(path))
-                //{
-                //    JsonSerializer.SerializeToWriter(solutions, writer);
-                //}
-
-                //solutions.Clear();
 
                 if (File.Exists(path))
                 {
@@ -78,8 +68,6 @@ namespace Release_Manager
                     MessageBox.Show("Solution configuration file solutions_config.json was not found!");
                     _logger.Warning("Solution configuration file not found, nor created automatically.");
                 }
-
-
                 comboBox1.DataSource = _jsonHandler.SolutionsConfigs;
 
             }
@@ -90,15 +78,29 @@ namespace Release_Manager
             }
         }
 
+        /// <summary>
+        /// Create XML report of selected directory including subdirectories.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void button1_Click(object sender, EventArgs e)
         {
             _logger.Debug("============== Started to create a new report right now. ============== ");
+            
             if (Directory.Exists(textBox1.Text))
             {
                 statusBox.Text += "Solution hash is being calculated, please wait.";
                 string path = textBox1.Text;
-                string xmlPath = Directory.GetCurrentDirectory() + "\\test.xml";
+
+                string xmlPath = Path.GetFullPath(
+                configFile.AppSettings.Settings["temporary_xml_file_path"].Value);
                 rm = new RecordsManager(path, xmlPath);
+                
+                if (rm.CurrentRecords == null)
+                {
+                    MessageError("Report cannot be created. Check error log.");
+                    return;
+                }
                 rm.SaveXML(xmlPath);
 
                 var solutionHash = rm.SolutionHash;
@@ -112,10 +114,7 @@ namespace Release_Manager
                 GC.WaitForPendingFinalizers();
             }
             else
-            {
                 MessageError("Selected directory does not exist. Create one or Select another one.");
-            }
-            
         }
 
         
@@ -177,7 +176,7 @@ namespace Release_Manager
                 {
                     sb.AppendLine("Filename: " + r.Filename);
                     sb.AppendLine("Hash: " + r.Hash);
-                    sb.AppendLine("ModificationDate: " + r.ModificationDate.ToString());
+                    sb.AppendLine("Date modified: " + r.ModificationDate.ToString());
                     sb.AppendLine("Version: " + r.Version.ToString());
                     sb.AppendLine();
                 }
@@ -253,7 +252,6 @@ namespace Release_Manager
         {
             statusBox.ForeColor = Color.Red;
             statusBox.Text = message;
-
         }
 
     }

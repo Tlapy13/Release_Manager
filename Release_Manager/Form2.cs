@@ -1,4 +1,5 @@
 ﻿using FileScanner;
+using Logging;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -8,12 +9,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Serilog;
 
 namespace Release_Manager
 {
     public partial class Form2 : Form
     {
         RecordsManager rm;
+        private readonly ILogger _logger = new SerilogClass().logger;
+
+
         public Form2(FileScanner.RecordsManager rmData)
         {   
             InitializeComponent();
@@ -24,17 +29,16 @@ namespace Release_Manager
 
         private void Print(string title, List<Record> records)
         {
-            textBox2.AppendText(title);
-            textBox2.AppendText(Environment.NewLine);
-            textBox2.AppendText(string.Concat(Enumerable.Repeat("-", title.Length-1)));
-            textBox2.AppendText(Environment.NewLine);
+            StringBuilder sb = new StringBuilder();
 
-            foreach (var r in records)
-            {
-                textBox2.AppendText(r.ToString());
-                textBox2.AppendText(Environment.NewLine);
-            }
-            textBox2.AppendText(Environment.NewLine);
+            sb.Append(title);
+            sb.Append(Environment.NewLine);
+            sb.AppendLine(string.Concat(Enumerable.Repeat("-", title.Length - 1)));
+            records.ForEach(r => sb.Append(r.ToString() + Environment.NewLine));
+            sb.AppendLine(Environment.NewLine);
+
+            textBox2.AppendText(sb.ToString());
+            sb.Clear();
         }
 
         private void Form2_Load(object sender, EventArgs e)
@@ -61,7 +65,7 @@ namespace Release_Manager
                 Print("Unchanged files: ", await rm.UnchangedFiles());
 
             textBox2.SelectionStart = 0;
-            textBox2.ScrollToCaret();
+            textBox2.ScrollToCaret();   
         }
 
         private void ChangedChk_CheckedChanged(object sender, EventArgs e)

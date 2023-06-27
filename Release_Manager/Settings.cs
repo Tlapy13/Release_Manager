@@ -24,7 +24,8 @@ namespace Release_Manager
         private readonly ILogger _logger = new SerilogClass().logger;
         private JsonHandler jsonHandler = new JsonHandler();
         private BindingSource _bindingSource = new BindingSource();
-        
+        Configuration configFile = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
+
 
         public Settings()
         {
@@ -39,21 +40,17 @@ namespace Release_Manager
         /// </summary>
         private void PopulateTextBoxes()
         {
-            var configFile = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
-
             logPathTextBox.Text =
                 configFile.AppSettings.Settings["serilog:write-to:File.path"].Value;
-
-            logPathTextBox.ReadOnly = true;
-
+            
             configPathTextbox.Text = Path.GetFullPath(
                 configFile.AppSettings.Settings["solutions_config_path"].Value);
 
-            configPathTextbox.ReadOnly = true;
-
             xmlPathTextBox.Text = Path.GetFullPath(
-                configFile.AppSettings.Settings["xml_file_path"].Value);
+                configFile.AppSettings.Settings["final_xml_file_path"].Value);
 
+            logPathTextBox.ReadOnly = true;
+            configPathTextbox.ReadOnly = true;
             xmlPathTextBox.ReadOnly = true;
         }
 
@@ -199,6 +196,7 @@ namespace Release_Manager
         }
 
 
+
         /// <summary>
         /// Save changes if all paths are supplied and configuration was serialized successfully.
         /// </summary>
@@ -209,7 +207,7 @@ namespace Release_Manager
             if (
                 ChangePath("serilog:write-to:File.path", logPathTextBox) && 
                 ChangePath("solutions_config_path", configPathTextbox) &&
-                ChangePath("xml_file_path", xmlPathTextBox) &&
+                ChangePath("final_xml_file_path", xmlPathTextBox) &&
                 jsonHandler.SerializeConfigFile())
             {
                 MessageOK("All changes have been saved successfully.");
@@ -228,18 +226,19 @@ namespace Release_Manager
         {
             try
             {
-                var configFile = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
                 configFile.AppSettings.Settings[key].Value = box.Text;
                 configFile.Save();
                 ConfigurationManager.RefreshSection(configFile.AppSettings.SectionInformation.Name);
 
                 statusBox.ForeColor = Color.Green;
-                statusBox.Text = "Log/configuration path has been updated.";
+                statusBox.Text = "Log/configuration/xml path has been updated.";
                 
                 if (box.Name == "logPathTextBox")
                     _logger.Debug($"This is current log path: {box.Text}.\n");
-                else
+                else if (box.Name == "configPathTextbox")
                     _logger.Debug($"This is current solution config path: {box.Text}.\n");
+                else
+                    _logger.Debug($"This is XML final file path: {box.Text}.\n");
                 return true;
             }
             catch (Exception ex)
@@ -247,32 +246,8 @@ namespace Release_Manager
                 _logger.Error($"Log path was not changed. See error details: {ex.InnerException.Message}");
                 return false;
             }
-
         }
 
-        /// <summary>
-        /// show tooltip while cursor hovers over label.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void ShowTooltip(Object sender, EventArgs e)
-        {
-            ToolTip tooltip = new ToolTip
-            {
-                Active = true,
-                ShowAlways = true,
-
-                AutoPopDelay = 1000,
-                InitialDelay = 250,
-                ReshowDelay = 3000,
-
-                IsBalloon = true,
-
-                ToolTipIcon = ToolTipIcon.Info
-            };
-            tooltip.SetToolTip(logPathLabel, "Enter path in format e.g.: C:\\Logs\\log-.txt");
-            tooltip.Show("Enter path in format e.g.: C:\\Logs\\log-.txt", this.logPathLabel);
-        }
 
         /// <summary>
         /// Store selected solution path and filename to textbox.
@@ -283,8 +258,6 @@ namespace Release_Manager
         {
             try
             {
-                // solutionPathBrowserDialog.InitialDirectory = @"C:\";
-                // solutionPathBrowserDialog.Filter = "Program files | *.cs;*.csproj;*.sln; *.suo; *.resx";
                 DialogResult result = solutionPathBrowserDialog.ShowDialog();
 
                 if (result == DialogResult.OK)
@@ -298,8 +271,6 @@ namespace Release_Manager
             {
                 _logger.Error($"Solution path was not selected. See error details: {ex.InnerException.Message}");
             }
-
-
         }
 
         private void SelectSolutionPath(Object sender, CancelEventArgs e)
@@ -308,7 +279,7 @@ namespace Release_Manager
             _logger.Debug($"This solution is selected: {folderPathTextbox.Text}");
         }
 
-       
+        
 
         private void SelectDataGridViewRow(Object sender, DataGridViewCellEventArgs e)
         {
@@ -334,7 +305,8 @@ namespace Release_Manager
             {
                 logPathTextBox.Text = "C:\\Logs\\Release_Manager-.txt";
                 configPathTextbox.Text = Directory.GetCurrentDirectory() + "\\solutions_config.json";
-                xmlPathTextBox.Text = Directory.GetCurrentDirectory() + "\\final.xml";
+                
+                xmlPathTextBox.Text = Directory.GetCurrentDirectory() + $"\\xml\\final.xml";
 
                 _bindingSource.Clear();
                 dataGridView1.DataSource = _bindingSource;
@@ -359,7 +331,7 @@ namespace Release_Manager
 
                 ChangePath("serilog:write-to:File.path", logPathTextBox);
                 ChangePath("solutions_config_path", configPathTextbox);
-                ChangePath("xml_file_path", xmlPathTextBox);
+                ChangePath("final_xml_file_path", xmlPathTextBox);
 
                 _logger.Debug("Application settings resetted.");
                 MessageOK("Application settings resetted.");
@@ -370,8 +342,9 @@ namespace Release_Manager
 
             {
                 _logger.Error($"JSON configuration backup file not found, it must be probably deleted or moved. Add JSON file manually to app folder.\r\n" +
-                    $"See also error message detail: {ex.InnerException.Message}");
+                    $"See also error message detail: {ex.Message}, {ex.InnerException.Message}");
                 MessageError("Reset cannot be executed - missing or corrupted JSON configuration file in application folder.");
+                return;
             }
 
             dataGridView1.Update();
@@ -402,7 +375,7 @@ namespace Release_Manager
                 MessageError("Directory does not exist. Create new one or specify path to existing one.");
         }
 
-        public delegate void CustomFormClosedHandler(object semder, FormClosedEventArgs e);
+        public delegate void CustomFormClosedHandler(object sender, FormClosedEventArgs e);
         public event CustomFormClosedHandler CustomFormClosed;
 
         private void SettingsClosed(object sender, FormClosedEventArgs e)

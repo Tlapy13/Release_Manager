@@ -3,6 +3,7 @@ using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
@@ -22,10 +23,21 @@ namespace FileScanner
         {
             var watch = System.Diagnostics.Stopwatch.StartNew();
             SavedRecords = Records.LoadFromXML(File);
-            CurrentRecords = Records.ReadDirectory(directory);
             watch.Stop();
             var elapsedTime = watch.ElapsedMilliseconds;
-            _logger.Debug("Loading data for SavedRecords and CurrentRecords took: {elapsedTime} miliseconds.", elapsedTime);
+            _logger.Debug("Loading data for SavedRecords took: {elapsedTime} miliseconds.", elapsedTime);
+
+            watch.Reset();
+            watch.Start();
+             
+            CurrentRecords = Records.ReadDirectory(directory);
+            if (CurrentRecords == null)
+                return;
+            
+            
+            watch.Stop();
+            elapsedTime = watch.ElapsedMilliseconds;
+            _logger.Debug("Loading data for CurrentRecords took: {elapsedTime} miliseconds.", elapsedTime);
 
             foreach (Record currentRecord in CurrentRecords)
             {
@@ -39,25 +51,17 @@ namespace FileScanner
                     }
                 }
             };
-
-
             GetSolutionHash();
         }
 
         public void SaveXML(string File)
         {
-            var watch = System.Diagnostics.Stopwatch.StartNew();
             CurrentRecords.SaveToXML(File);
             _logger.Debug("Data has been saved to XML file successfully.");
-            watch.Stop();
-            var elapsedTime = watch.ElapsedMilliseconds;
-            _logger.Debug("Saving records to XML took: {elapsedTime} miliseconds.", elapsedTime);
-
         }
 
         private void GetSolutionHash()
         {
-
             StringBuilder sb = new StringBuilder();
 
             string hashlist = "";
@@ -66,8 +70,6 @@ namespace FileScanner
                 hashlist += record.Hash;
             }
 
-
-            var watch = System.Diagnostics.Stopwatch.StartNew();
             using (var md5 = MD5.Create())
             {
                 byte[] hashValue = md5.ComputeHash(Encoding.UTF8.GetBytes(hashlist));
@@ -76,11 +78,9 @@ namespace FileScanner
                     sb.Append($"{b:X2}");
                 }
             }
-            watch.Stop();
-            var elapsedTime = watch.ElapsedMilliseconds;
-            _logger.Debug("MD5 solution calculation took: {elapsedTime} miliseconds.", elapsedTime);
 
             SolutionHash = sb.ToString();
+            _logger.Debug("MD5 solution hash computed: {SolutionHash} .", SolutionHash);
             sb.Clear();
         }
 
