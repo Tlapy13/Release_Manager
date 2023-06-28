@@ -124,7 +124,7 @@ namespace Release_Manager
             // 
             // textBox2
             // 
-            this.textBox2.BackColor = System.Drawing.Color.AliceBlue;
+            this.textBox2.BackColor = System.Drawing.Color.White;
             this.textBox2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.textBox2.Location = new System.Drawing.Point(104, 91);
             this.textBox2.Name = "textBox2";
@@ -152,7 +152,7 @@ namespace Release_Manager
             // 
             // textBox3
             // 
-            this.textBox3.BackColor = System.Drawing.Color.AliceBlue;
+            this.textBox3.BackColor = System.Drawing.Color.White;
             this.textBox3.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.textBox3.Location = new System.Drawing.Point(104, 124);
             this.textBox3.Multiline = true;
@@ -263,6 +263,7 @@ namespace Release_Manager
             this.Name = "Form1";
             this.Text = "Release Manager tool";
             this.Load += new System.EventHandler(this.Form1_Load);
+            this.MouseClick += new System.Windows.Forms.MouseEventHandler(this.ClearStatusBoxTextWhenClicked);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             this.ResumeLayout(false);

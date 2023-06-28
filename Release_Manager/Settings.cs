@@ -27,6 +27,7 @@ namespace Release_Manager
         Configuration configFile = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
 
 
+
         public Settings()
         {
             InitializeComponent();
@@ -49,9 +50,13 @@ namespace Release_Manager
             xmlPathTextBox.Text = Path.GetFullPath(
                 configFile.AppSettings.Settings["final_xml_file_path"].Value);
 
+            reportPathTextBox.Text = Path.GetFullPath(
+                configFile.AppSettings.Settings["pdf_folder_path"].Value);
+
             logPathTextBox.ReadOnly = true;
             configPathTextbox.ReadOnly = true;
             xmlPathTextBox.ReadOnly = true;
+            reportPathTextBox.ReadOnly = true;
         }
 
         /// <summary>
@@ -195,6 +200,12 @@ namespace Release_Manager
             }
         }
 
+        private void SelectReportPath(Object sender, EventArgs e)
+        {
+            if (reportPathBrowserDialog.ShowDialog() == DialogResult.OK)
+                reportPathTextBox.Text = reportPathBrowserDialog.SelectedPath;
+        }
+
 
 
         /// <summary>
@@ -208,9 +219,11 @@ namespace Release_Manager
                 ChangePath("serilog:write-to:File.path", logPathTextBox) && 
                 ChangePath("solutions_config_path", configPathTextbox) &&
                 ChangePath("final_xml_file_path", xmlPathTextBox) &&
+                ChangePath("pdf_folder_path", reportPathTextBox) &&
                 jsonHandler.SerializeConfigFile())
             {
                 MessageOK("All changes have been saved successfully.");
+                configFile.Save();
             }
             else
                 MessageError("Updated log/configuration path cannot be changed. See log for errors.");
@@ -273,14 +286,6 @@ namespace Release_Manager
             }
         }
 
-        private void SelectSolutionPath(Object sender, CancelEventArgs e)
-        {
-            folderPathTextbox.Text = solutionPathBrowserDialog.SelectedPath;
-            _logger.Debug($"This solution is selected: {folderPathTextbox.Text}");
-        }
-
-        
-
         private void SelectDataGridViewRow(Object sender, DataGridViewCellEventArgs e)
         {
             folderNameTextbox.Text = dataGridView1.CurrentRow.Cells[0].Value.ToString();
@@ -305,8 +310,8 @@ namespace Release_Manager
             {
                 logPathTextBox.Text = "C:\\Logs\\Release_Manager-.txt";
                 configPathTextbox.Text = Directory.GetCurrentDirectory() + "\\solutions_config.json";
-                
-                xmlPathTextBox.Text = Directory.GetCurrentDirectory() + $"\\xml\\final.xml";
+                xmlPathTextBox.Text = Directory.GetCurrentDirectory() + "\\xml\\final.xml";
+                reportPathTextBox.Text = Directory.GetCurrentDirectory() + "\\reports"; 
 
                 _bindingSource.Clear();
                 dataGridView1.DataSource = _bindingSource;
@@ -332,6 +337,8 @@ namespace Release_Manager
                 ChangePath("serilog:write-to:File.path", logPathTextBox);
                 ChangePath("solutions_config_path", configPathTextbox);
                 ChangePath("final_xml_file_path", xmlPathTextBox);
+                ChangePath("pdf_folder_path", reportPathTextBox);
+                configFile.Save();
 
                 _logger.Debug("Application settings resetted.");
                 MessageOK("Application settings resetted.");

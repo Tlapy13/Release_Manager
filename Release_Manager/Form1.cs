@@ -25,6 +25,7 @@ namespace Release_Manager
         private readonly ILogger _logger = new SerilogClass().logger;
         private JsonHandler _jsonHandler = new JsonHandler();
         private Settings settingsForm;
+        private RecordsManager records;
         Configuration configFile = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
 
         public Form1()
@@ -39,16 +40,24 @@ namespace Release_Manager
             try
             {
                 DirectoryInfo xmlFolder;
-                string path = Path.GetFullPath(
-                    configFile.AppSettings.Settings["solutions_config_path"].Value);
+                DirectoryInfo reportFolder;
+                string path = Path.GetFullPath(configFile.AppSettings.Settings["solutions_config_path"].Value);
                 string xmlFinal = Directory.GetCurrentDirectory() + "\\xml\\final.xml";
+                string reports = Directory.GetCurrentDirectory() + "\\reports";
 
                 if (!File.Exists(path))
                     AddDummyDataToSolutionsConfigs(_jsonHandler);
 
                 if (!Directory.Exists(Directory.GetCurrentDirectory() + "\\xml"))
-                        xmlFolder = Directory.CreateDirectory("xml");
+                    xmlFolder = Directory.CreateDirectory("xml");
+
+                if (!Directory.Exists(Directory.GetCurrentDirectory() + "\\reports"))
+                {
+                    reportFolder = Directory.CreateDirectory(reports);
+                    configFile.AppSettings.Settings["pdf_folder_path"].Value = reports;
+                }
                 
+
                 if (!File.Exists(xmlFinal))
                 {
                     File.Create(xmlFinal);
@@ -76,6 +85,7 @@ namespace Release_Manager
                 _logger.Error($"Error occurred while attempting to open and read JSON content: {ex.InnerException.Message}");
                 throw new Exception("GetFileSpecsFromJson - specs loading issue occured", ex);
             }
+            configFile.Save();
         }
 
         /// <summary>
@@ -94,16 +104,16 @@ namespace Release_Manager
 
                 string xmlPath = Path.GetFullPath(
                 configFile.AppSettings.Settings["temporary_xml_file_path"].Value);
-                rm = new RecordsManager(path, xmlPath);
+                records = new RecordsManager(path, xmlPath);
                 
-                if (rm.CurrentRecords == null)
+                if (records.CurrentRecords == null)
                 {
                     MessageError("Report cannot be created. Check error log.");
                     return;
                 }
-                rm.SaveXML(xmlPath);
+                records.SaveXML(xmlPath);
 
-                var solutionHash = rm.SolutionHash;
+                var solutionHash = records.SolutionHash;
                 statusBox.Clear();
                 statusBox.ForeColor = Color.Black;
                 statusBox.Text += $"Solution hash: \r\n{solutionHash}";
@@ -129,7 +139,7 @@ namespace Release_Manager
         private void button3_Click(object sender, EventArgs e)
         {
             //TODO: change naming convention
-            Form2 fm2 = new Form2(rm);
+            Form2 fm2 = new Form2(records);
             fm2.Show();
         }
 
@@ -146,21 +156,24 @@ namespace Release_Manager
         {
             //TODO: change naming convention
             StringBuilderData sd = new StringBuilderData();
-            sd.Header = "Evidence Reported Created: ";
-            sd.FileName = "test2.pdf";
+            sd.Header = "Evidence Report Created: ";
+            sd.FileName = $"{configFile.AppSettings.Settings["pdf_folder_path"].Value}\\REPORT_{DateTime.Now.ToString("dd-MM-yyyy_HH-mm-ss")}.pdf";
             sd.ChangeId = textBox2.Text;
             sd.Note = textBox3.Text;
-            sd.rm = rm;
+            sd.rm = records;
 
             PdfWriterCls pdf = new PdfWriterCls(sd);
 
-       
+
             //if (sb.Length == 0)
             //{
             //    pdf.WriteToPdf("no changes detected");
             //}
 
             //pdf.WriteToPdf(sb);
+            MessageOK("PDF report has been generated.");
+            textBox2.Text = String.Empty;
+            textBox3.Text = String.Empty;
         }
 
         private StringBuilder ExportObjectData(string title, List<Record> records)
@@ -252,6 +265,16 @@ namespace Release_Manager
         {
             statusBox.ForeColor = Color.Red;
             statusBox.Text = message;
+        }
+
+        private void ClearStatusBoxTextWhenClicked(Object sender, MouseEventArgs e)
+        {
+            if (statusBox.Text != String.Empty)
+            {
+                statusBox.Text = String.Empty;
+                statusBox.ForeColor = Color.Black;
+            }
+
         }
 
     }

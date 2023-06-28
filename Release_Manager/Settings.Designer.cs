@@ -61,6 +61,10 @@
             this.xmlPathTextBox = new System.Windows.Forms.TextBox();
             this.xmlPathBrowserDialog = new System.Windows.Forms.FolderBrowserDialog();
             this.xmlPathDialog = new System.Windows.Forms.OpenFileDialog();
+            this.BrowseReportFolder = new System.Windows.Forms.Button();
+            this.label6 = new System.Windows.Forms.Label();
+            this.reportPathTextBox = new System.Windows.Forms.TextBox();
+            this.reportPathBrowserDialog = new System.Windows.Forms.FolderBrowserDialog();
             this.solutionNameDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.solutionPathDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.solutionsConfigBindingSource = new System.Windows.Forms.BindingSource(this.components);
@@ -88,7 +92,7 @@
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(326, 388);
+            this.button1.Location = new System.Drawing.Point(326, 403);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(109, 23);
             this.button1.TabIndex = 10;
@@ -98,7 +102,7 @@
             // 
             // cancel
             // 
-            this.cancel.Location = new System.Drawing.Point(441, 388);
+            this.cancel.Location = new System.Drawing.Point(441, 403);
             this.cancel.Name = "cancel";
             this.cancel.Size = new System.Drawing.Size(109, 23);
             this.cancel.TabIndex = 11;
@@ -108,7 +112,7 @@
             // 
             // button3
             // 
-            this.button3.Location = new System.Drawing.Point(556, 388);
+            this.button3.Location = new System.Drawing.Point(556, 403);
             this.button3.Name = "button3";
             this.button3.Size = new System.Drawing.Size(109, 23);
             this.button3.TabIndex = 12;
@@ -147,7 +151,7 @@
             // logPathLabel
             // 
             this.logPathLabel.AutoSize = true;
-            this.logPathLabel.Location = new System.Drawing.Point(12, 338);
+            this.logPathLabel.Location = new System.Drawing.Point(12, 353);
             this.logPathLabel.Name = "logPathLabel";
             this.logPathLabel.Size = new System.Drawing.Size(52, 13);
             this.logPathLabel.TabIndex = 22;
@@ -157,7 +161,7 @@
             // 
             this.logPathTextBox.BackColor = System.Drawing.SystemColors.Window;
             this.logPathTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.logPathTextBox.Location = new System.Drawing.Point(95, 336);
+            this.logPathTextBox.Location = new System.Drawing.Point(95, 351);
             this.logPathTextBox.Name = "logPathTextBox";
             this.logPathTextBox.Size = new System.Drawing.Size(455, 20);
             this.logPathTextBox.TabIndex = 21;
@@ -232,7 +236,7 @@
             // 
             // BrowseLogFolder
             // 
-            this.BrowseLogFolder.Location = new System.Drawing.Point(556, 336);
+            this.BrowseLogFolder.Location = new System.Drawing.Point(556, 351);
             this.BrowseLogFolder.Name = "BrowseLogFolder";
             this.BrowseLogFolder.Size = new System.Drawing.Size(109, 20);
             this.BrowseLogFolder.TabIndex = 30;
@@ -242,7 +246,7 @@
             // 
             // browseConfigPath
             // 
-            this.browseConfigPath.Location = new System.Drawing.Point(556, 362);
+            this.browseConfigPath.Location = new System.Drawing.Point(556, 377);
             this.browseConfigPath.Name = "browseConfigPath";
             this.browseConfigPath.Size = new System.Drawing.Size(109, 20);
             this.browseConfigPath.TabIndex = 33;
@@ -253,7 +257,7 @@
             // configPathLabel
             // 
             this.configPathLabel.AutoSize = true;
-            this.configPathLabel.Location = new System.Drawing.Point(12, 364);
+            this.configPathLabel.Location = new System.Drawing.Point(12, 379);
             this.configPathLabel.Name = "configPathLabel";
             this.configPathLabel.Size = new System.Drawing.Size(64, 13);
             this.configPathLabel.TabIndex = 32;
@@ -263,7 +267,7 @@
             // 
             this.configPathTextbox.BackColor = System.Drawing.SystemColors.Window;
             this.configPathTextbox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.configPathTextbox.Location = new System.Drawing.Point(95, 362);
+            this.configPathTextbox.Location = new System.Drawing.Point(95, 377);
             this.configPathTextbox.Name = "configPathTextbox";
             this.configPathTextbox.Size = new System.Drawing.Size(455, 20);
             this.configPathTextbox.TabIndex = 31;
@@ -282,7 +286,7 @@
             // 
             this.statusBox.BackColor = System.Drawing.SystemColors.Info;
             this.statusBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.statusBox.Location = new System.Drawing.Point(16, 419);
+            this.statusBox.Location = new System.Drawing.Point(16, 434);
             this.statusBox.Name = "statusBox";
             this.statusBox.ReadOnly = true;
             this.statusBox.Size = new System.Drawing.Size(649, 13);
@@ -290,7 +294,7 @@
             // 
             // Logs
             // 
-            this.Logs.Location = new System.Drawing.Point(95, 388);
+            this.Logs.Location = new System.Drawing.Point(95, 403);
             this.Logs.Name = "Logs";
             this.Logs.Size = new System.Drawing.Size(109, 23);
             this.Logs.TabIndex = 36;
@@ -300,7 +304,7 @@
             // 
             // BrowseXMLsFolder
             // 
-            this.BrowseXMLsFolder.Location = new System.Drawing.Point(556, 310);
+            this.BrowseXMLsFolder.Location = new System.Drawing.Point(556, 325);
             this.BrowseXMLsFolder.Name = "BrowseXMLsFolder";
             this.BrowseXMLsFolder.Size = new System.Drawing.Size(109, 20);
             this.BrowseXMLsFolder.TabIndex = 39;
@@ -311,7 +315,7 @@
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(12, 312);
+            this.label5.Location = new System.Drawing.Point(12, 327);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(78, 13);
             this.label5.TabIndex = 38;
@@ -321,10 +325,38 @@
             // 
             this.xmlPathTextBox.BackColor = System.Drawing.SystemColors.Window;
             this.xmlPathTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.xmlPathTextBox.Location = new System.Drawing.Point(95, 310);
+            this.xmlPathTextBox.Location = new System.Drawing.Point(95, 325);
             this.xmlPathTextBox.Name = "xmlPathTextBox";
             this.xmlPathTextBox.Size = new System.Drawing.Size(455, 20);
             this.xmlPathTextBox.TabIndex = 37;
+            // 
+            // BrowseReportFolder
+            // 
+            this.BrowseReportFolder.Location = new System.Drawing.Point(556, 299);
+            this.BrowseReportFolder.Name = "BrowseReportFolder";
+            this.BrowseReportFolder.Size = new System.Drawing.Size(109, 20);
+            this.BrowseReportFolder.TabIndex = 42;
+            this.BrowseReportFolder.Text = "Browse";
+            this.BrowseReportFolder.UseVisualStyleBackColor = true;
+            this.BrowseReportFolder.Click += new System.EventHandler(this.SelectReportPath);
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(12, 301);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(66, 13);
+            this.label6.TabIndex = 41;
+            this.label6.Text = "Report path:";
+            // 
+            // reportPathTextBox
+            // 
+            this.reportPathTextBox.BackColor = System.Drawing.SystemColors.Window;
+            this.reportPathTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.reportPathTextBox.Location = new System.Drawing.Point(95, 299);
+            this.reportPathTextBox.Name = "reportPathTextBox";
+            this.reportPathTextBox.Size = new System.Drawing.Size(455, 20);
+            this.reportPathTextBox.TabIndex = 40;
             // 
             // solutionNameDataGridViewTextBoxColumn
             // 
@@ -350,7 +382,10 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.AliceBlue;
-            this.ClientSize = new System.Drawing.Size(677, 441);
+            this.ClientSize = new System.Drawing.Size(677, 457);
+            this.Controls.Add(this.BrowseReportFolder);
+            this.Controls.Add(this.label6);
+            this.Controls.Add(this.reportPathTextBox);
             this.Controls.Add(this.BrowseXMLsFolder);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.xmlPathTextBox);
@@ -421,5 +456,9 @@
         private System.Windows.Forms.TextBox xmlPathTextBox;
         private System.Windows.Forms.FolderBrowserDialog xmlPathBrowserDialog;
         private System.Windows.Forms.OpenFileDialog xmlPathDialog;
+        private System.Windows.Forms.Button BrowseReportFolder;
+        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.TextBox reportPathTextBox;
+        private System.Windows.Forms.FolderBrowserDialog reportPathBrowserDialog;
     }
 }
