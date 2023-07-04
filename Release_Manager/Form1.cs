@@ -16,6 +16,7 @@ using Logging;
 using System.Configuration;
 using System.Security.Cryptography;
 using SerilogTimings;
+using System.Xml;
 
 namespace Release_Manager
 {
@@ -44,7 +45,7 @@ namespace Release_Manager
                 string path = Path.GetFullPath(configFile.AppSettings.Settings["solutions_config_path"].Value);
                 string xmlFinal = Directory.GetCurrentDirectory() + "\\xml\\final.xml";
                 string reports = Directory.GetCurrentDirectory() + "\\reports";
-
+              //  string TempXML = Directory.GetCurrentDirectory() + "\\TempXML";
                 if (!File.Exists(path))
                     AddDummyDataToSolutionsConfigs(_jsonHandler);
 
@@ -77,7 +78,7 @@ namespace Release_Manager
                     MessageBox.Show("Solution configuration file solutions_config.json was not found!");
                     _logger.Warning("Solution configuration file not found, nor created automatically.");
                 }
-                comboBox1.DataSource = _jsonHandler.SolutionsConfigs;
+                cbo_App.DataSource = _jsonHandler.SolutionsConfigs;
 
             }
             catch (Exception ex)
@@ -93,19 +94,20 @@ namespace Release_Manager
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void button1_Click(object sender, EventArgs e)
+        private void btn_Createevidence_rep_Click(object sender, EventArgs e)
         {
             _logger.Debug("============== Started to create a new report right now. ============== ");
-            
-            if (Directory.Exists(textBox1.Text))
+
+            if (Directory.Exists(txt_Apppath.Text))
             {
                 statusBox.Text += "Solution hash is being calculated, please wait.";
-                string path = textBox1.Text;
-
-                string xmlPath = Path.GetFullPath(
+                string path = txt_Apppath.Text;
+                //string dateAndTime = " '' " + DateTime.Now.ToShortDateString() + "-" + DateTime.Now.ToShortTimeString() + " '' ";
+               string xmlPath = Path.GetFullPath(
                 configFile.AppSettings.Settings["temporary_xml_file_path"].Value);
+               // string xmlPath = $"{configFile.AppSettings.Settings["temporary_xml_file_path"].Value}\\Temp_{ DateTime.Now.ToString("dd-MM-yyyy_HH-mm-ss")}.xml";
+
                 records = new RecordsManager(path, xmlPath);
-                
                 if (records.CurrentRecords == null)
                 {
                     MessageError("Report cannot be created. Check error log.");
@@ -118,7 +120,7 @@ namespace Release_Manager
                 statusBox.ForeColor = Color.Black;
                 statusBox.Text += $"Solution hash: \r\n{solutionHash}";
                 SetFunctionality(true);
-                button3.Focus();
+                btn_Viewevidence_rep.Focus();
 
                 GC.Collect();
                 GC.WaitForPendingFinalizers();
@@ -131,35 +133,35 @@ namespace Release_Manager
 
         private void SetFunctionality(bool enable)
         {
-            button1.Enabled = !enable;
-            button2.Enabled = enable;
-            button3.Enabled = enable;
+            btn_Createevidence_rep.Enabled = !enable;
+            btn_Saveevidence_rep.Enabled = enable;
+            btn_Viewevidence_rep.Enabled = enable;
         }
 
-        private void button3_Click(object sender, EventArgs e)
+        private void btn_Viewevidence_rep_Click(object sender, EventArgs e)
         {
-            //TODO: change naming convention
+           
             Form2 fm2 = new Form2(records);
             fm2.Show();
         }
 
-        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
+        private void cbo_App_SelectedIndexChanged(object sender, EventArgs e)
         {
             statusBox.Clear();
             SetFunctionality(false);
-            textBox1.Text = Path.Combine((comboBox1.SelectedItem as SolutionsConfig).SolutionPath, (comboBox1.SelectedItem as SolutionsConfig).SolutionName);
-            textBox2.Focus();
+            txt_Apppath.Text = Path.Combine((cbo_App.SelectedItem as SolutionsConfig).SolutionPath, (cbo_App.SelectedItem as SolutionsConfig).SolutionName);
+            txt_Changeid.Focus();
 
         }
 
-        private void button2_Click(object sender, EventArgs e)
+        private void btn_Saveevidence_rep_Click(object sender, EventArgs e)
         {
-            //TODO: change naming convention
+        
             StringBuilderData sd = new StringBuilderData();
             sd.Header = "Evidence Report Created: ";
             sd.FileName = $"{configFile.AppSettings.Settings["pdf_folder_path"].Value}\\REPORT_{DateTime.Now.ToString("dd-MM-yyyy_HH-mm-ss")}.pdf";
-            sd.ChangeId = textBox2.Text;
-            sd.Note = textBox3.Text;
+            sd.ChangeId = txt_Changeid.Text;
+            sd.Note = txt_Note.Text;
             sd.rm = records;
 
             PdfWriterCls pdf = new PdfWriterCls(sd);
@@ -171,10 +173,35 @@ namespace Release_Manager
             //}
 
             //pdf.WriteToPdf(sb);
-            MessageOK("PDF report has been generated.");
-            textBox2.Text = String.Empty;
-            textBox3.Text = String.Empty;
+          
+            txt_Changeid.Text = String.Empty;
+            txt_Note.Text = String.Empty;
+            string temp = $"{configFile.AppSettings.Settings["temporary_xml_file_path"].Value}";
+            string final = $"{configFile.AppSettings.Settings["final_xml_file_path"].Value}";
+            CopyXmlDocument(temp, final);
+            //File.Replace(temp, final,temp);
+
+            MessageOK("Evidence report has been generated.");
         }
+            private static void CopyXmlDocument(string temp, string final)
+            {
+             
+                XmlDocument document = new XmlDocument();
+                document.Load(temp);
+
+                // Modify XML file using XmlDocument here
+
+              //  Console.WriteLine(document.OuterXml);
+                if (File.Exists(final))
+                  // File.Delete(final);
+                document.Save(final);
+      
+          //  File.Delete(temp);
+
+        }
+
+
+        
 
         private StringBuilder ExportObjectData(string title, List<Record> records)
         {
@@ -204,7 +231,7 @@ namespace Release_Manager
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            comboBox1.BackColor = Color.AliceBlue;
+            cbo_App.BackColor = Color.AliceBlue;
             
         }
 
@@ -238,10 +265,10 @@ namespace Release_Manager
         private void CloseListener(object sender, EventArgs e)
         {
             _jsonHandler.DeserializeConfigFile();
-            comboBox1.DataSource = _jsonHandler.SolutionsConfigs;
-            comboBox1.Refresh();
+            cbo_App.DataSource = _jsonHandler.SolutionsConfigs;
+            cbo_App.Refresh();
             if (_jsonHandler.SolutionsConfigs.Count == 0)
-                textBox1.Text = String.Empty;
+                txt_Apppath.Text = String.Empty;
         }
 
         public void AddDummyDataToSolutionsConfigs(JsonHandler jsonHandler)
@@ -277,5 +304,9 @@ namespace Release_Manager
 
         }
 
+        private void txt_Apppath_TextChanged(object sender, EventArgs e)
+        {
+
+        }
     }
 }

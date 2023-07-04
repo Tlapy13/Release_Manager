@@ -30,17 +30,17 @@ namespace Release_Manager
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            this.button1 = new System.Windows.Forms.Button();
-            this.textBox1 = new System.Windows.Forms.TextBox();
-            this.button2 = new System.Windows.Forms.Button();
-            this.button3 = new System.Windows.Forms.Button();
-            this.comboBox1 = new System.Windows.Forms.ComboBox();
-            this.label1 = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
-            this.textBox2 = new System.Windows.Forms.TextBox();
-            this.label3 = new System.Windows.Forms.Label();
-            this.label4 = new System.Windows.Forms.Label();
-            this.textBox3 = new System.Windows.Forms.TextBox();
+            this.btn_Createevidence_rep = new System.Windows.Forms.Button();
+            this.txt_Apppath = new System.Windows.Forms.TextBox();
+            this.btn_Saveevidence_rep = new System.Windows.Forms.Button();
+            this.btn_Viewevidence_rep = new System.Windows.Forms.Button();
+            this.cbo_App = new System.Windows.Forms.ComboBox();
+            this.lbl_Application = new System.Windows.Forms.Label();
+            this.lbl_Apppath = new System.Windows.Forms.Label();
+            this.txt_Changeid = new System.Windows.Forms.TextBox();
+            this.lbl_Changeid = new System.Windows.Forms.Label();
+            this.lbl_Note = new System.Windows.Forms.Label();
+            this.txt_Note = new System.Windows.Forms.TextBox();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.settingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -53,112 +53,113 @@ namespace Release_Manager
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
-            // button1
+            // btn_Createevidence_rep
             // 
-            this.button1.Location = new System.Drawing.Point(395, 212);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(221, 23);
-            this.button1.TabIndex = 0;
-            this.button1.Text = "create evidence report";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
+            this.btn_Createevidence_rep.Location = new System.Drawing.Point(395, 212);
+            this.btn_Createevidence_rep.Name = "btn_Createevidence_rep";
+            this.btn_Createevidence_rep.Size = new System.Drawing.Size(221, 23);
+            this.btn_Createevidence_rep.TabIndex = 0;
+            this.btn_Createevidence_rep.Text = "create evidence report";
+            this.btn_Createevidence_rep.UseVisualStyleBackColor = true;
+            this.btn_Createevidence_rep.Click += new System.EventHandler(this.btn_Createevidence_rep_Click);
             // 
-            // textBox1
+            // txt_Apppath
             // 
-            this.textBox1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.textBox1.Location = new System.Drawing.Point(104, 48);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.ReadOnly = true;
-            this.textBox1.Size = new System.Drawing.Size(512, 20);
-            this.textBox1.TabIndex = 1;
+            this.txt_Apppath.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.txt_Apppath.Location = new System.Drawing.Point(104, 48);
+            this.txt_Apppath.Name = "txt_Apppath";
+            this.txt_Apppath.ReadOnly = true;
+            this.txt_Apppath.Size = new System.Drawing.Size(512, 20);
+            this.txt_Apppath.TabIndex = 1;
+            this.txt_Apppath.TextChanged += new System.EventHandler(this.txt_Apppath_TextChanged);
             // 
-            // button2
+            // btn_Saveevidence_rep
             // 
-            this.button2.Location = new System.Drawing.Point(395, 270);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(221, 23);
-            this.button2.TabIndex = 2;
-            this.button2.Text = "save evidence report";
-            this.button2.UseVisualStyleBackColor = true;
-            this.button2.Click += new System.EventHandler(this.button2_Click);
+            this.btn_Saveevidence_rep.Location = new System.Drawing.Point(395, 270);
+            this.btn_Saveevidence_rep.Name = "btn_Saveevidence_rep";
+            this.btn_Saveevidence_rep.Size = new System.Drawing.Size(221, 23);
+            this.btn_Saveevidence_rep.TabIndex = 2;
+            this.btn_Saveevidence_rep.Text = "save evidence report";
+            this.btn_Saveevidence_rep.UseVisualStyleBackColor = true;
+            this.btn_Saveevidence_rep.Click += new System.EventHandler(this.btn_Saveevidence_rep_Click);
             // 
-            // button3
+            // btn_Viewevidence_rep
             // 
-            this.button3.Location = new System.Drawing.Point(395, 241);
-            this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(221, 23);
-            this.button3.TabIndex = 3;
-            this.button3.Text = "view evidence report";
-            this.button3.UseVisualStyleBackColor = true;
-            this.button3.Click += new System.EventHandler(this.button3_Click);
+            this.btn_Viewevidence_rep.Location = new System.Drawing.Point(395, 241);
+            this.btn_Viewevidence_rep.Name = "btn_Viewevidence_rep";
+            this.btn_Viewevidence_rep.Size = new System.Drawing.Size(221, 23);
+            this.btn_Viewevidence_rep.TabIndex = 3;
+            this.btn_Viewevidence_rep.Text = "view evidence report";
+            this.btn_Viewevidence_rep.UseVisualStyleBackColor = true;
+            this.btn_Viewevidence_rep.Click += new System.EventHandler(this.btn_Viewevidence_rep_Click);
             // 
-            // comboBox1
+            // cbo_App
             // 
-            this.comboBox1.BackColor = System.Drawing.Color.AliceBlue;
-            this.comboBox1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboBox1.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.comboBox1.ForeColor = System.Drawing.SystemColors.WindowText;
-            this.comboBox1.Location = new System.Drawing.Point(104, 11);
-            this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(512, 21);
-            this.comboBox1.TabIndex = 4;
-            this.comboBox1.SelectedIndexChanged += new System.EventHandler(this.comboBox1_SelectedIndexChanged);
+            this.cbo_App.BackColor = System.Drawing.Color.AliceBlue;
+            this.cbo_App.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cbo_App.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.cbo_App.ForeColor = System.Drawing.SystemColors.WindowText;
+            this.cbo_App.Location = new System.Drawing.Point(104, 11);
+            this.cbo_App.Name = "cbo_App";
+            this.cbo_App.Size = new System.Drawing.Size(512, 21);
+            this.cbo_App.TabIndex = 4;
+            this.cbo_App.SelectedIndexChanged += new System.EventHandler(this.cbo_App_SelectedIndexChanged);
             // 
-            // label1
+            // lbl_Application
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(12, 14);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(62, 13);
-            this.label1.TabIndex = 5;
-            this.label1.Text = "Application:";
+            this.lbl_Application.AutoSize = true;
+            this.lbl_Application.Location = new System.Drawing.Point(12, 14);
+            this.lbl_Application.Name = "lbl_Application";
+            this.lbl_Application.Size = new System.Drawing.Size(62, 13);
+            this.lbl_Application.TabIndex = 5;
+            this.lbl_Application.Text = "Application:";
             // 
-            // label2
+            // lbl_Apppath
             // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(12, 51);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(86, 13);
-            this.label2.TabIndex = 6;
-            this.label2.Text = "Application path:";
+            this.lbl_Apppath.AutoSize = true;
+            this.lbl_Apppath.Location = new System.Drawing.Point(12, 51);
+            this.lbl_Apppath.Name = "lbl_Apppath";
+            this.lbl_Apppath.Size = new System.Drawing.Size(86, 13);
+            this.lbl_Apppath.TabIndex = 6;
+            this.lbl_Apppath.Text = "Application path:";
             // 
-            // textBox2
+            // txt_Changeid
             // 
-            this.textBox2.BackColor = System.Drawing.Color.White;
-            this.textBox2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.textBox2.Location = new System.Drawing.Point(104, 91);
-            this.textBox2.Name = "textBox2";
-            this.textBox2.Size = new System.Drawing.Size(512, 20);
-            this.textBox2.TabIndex = 7;
-            this.textBox2.TextChanged += new System.EventHandler(this.textBox2_TextChanged);
+            this.txt_Changeid.BackColor = System.Drawing.Color.AliceBlue;
+            this.txt_Changeid.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.txt_Changeid.Location = new System.Drawing.Point(104, 91);
+            this.txt_Changeid.Name = "txt_Changeid";
+            this.txt_Changeid.Size = new System.Drawing.Size(512, 20);
+            this.txt_Changeid.TabIndex = 7;
+            this.txt_Changeid.TextChanged += new System.EventHandler(this.textBox2_TextChanged);
             // 
-            // label3
+            // lbl_Changeid
             // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(12, 94);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(61, 13);
-            this.label3.TabIndex = 8;
-            this.label3.Text = "Change ID:";
+            this.lbl_Changeid.AutoSize = true;
+            this.lbl_Changeid.Location = new System.Drawing.Point(12, 94);
+            this.lbl_Changeid.Name = "lbl_Changeid";
+            this.lbl_Changeid.Size = new System.Drawing.Size(61, 13);
+            this.lbl_Changeid.TabIndex = 8;
+            this.lbl_Changeid.Text = "Change ID:";
             // 
-            // label4
+            // lbl_Note
             // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(13, 131);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(33, 13);
-            this.label4.TabIndex = 9;
-            this.label4.Text = "Note:";
+            this.lbl_Note.AutoSize = true;
+            this.lbl_Note.Location = new System.Drawing.Point(13, 131);
+            this.lbl_Note.Name = "lbl_Note";
+            this.lbl_Note.Size = new System.Drawing.Size(33, 13);
+            this.lbl_Note.TabIndex = 9;
+            this.lbl_Note.Text = "Note:";
             // 
-            // textBox3
+            // txt_Note
             // 
-            this.textBox3.BackColor = System.Drawing.Color.White;
-            this.textBox3.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.textBox3.Location = new System.Drawing.Point(104, 124);
-            this.textBox3.Multiline = true;
-            this.textBox3.Name = "textBox3";
-            this.textBox3.Size = new System.Drawing.Size(512, 67);
-            this.textBox3.TabIndex = 10;
+            this.txt_Note.BackColor = System.Drawing.Color.AliceBlue;
+            this.txt_Note.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.txt_Note.Location = new System.Drawing.Point(104, 124);
+            this.txt_Note.Multiline = true;
+            this.txt_Note.Name = "txt_Note";
+            this.txt_Note.Size = new System.Drawing.Size(512, 67);
+            this.txt_Note.TabIndex = 10;
             // 
             // menuStrip1
             // 
@@ -245,17 +246,17 @@ namespace Release_Manager
             this.ClientSize = new System.Drawing.Size(662, 367);
             this.Controls.Add(this.statusBox);
             this.Controls.Add(this.label5);
-            this.Controls.Add(this.comboBox1);
-            this.Controls.Add(this.textBox3);
-            this.Controls.Add(this.label4);
-            this.Controls.Add(this.label3);
-            this.Controls.Add(this.textBox2);
-            this.Controls.Add(this.label2);
-            this.Controls.Add(this.label1);
-            this.Controls.Add(this.button3);
-            this.Controls.Add(this.button2);
-            this.Controls.Add(this.textBox1);
-            this.Controls.Add(this.button1);
+            this.Controls.Add(this.cbo_App);
+            this.Controls.Add(this.txt_Note);
+            this.Controls.Add(this.lbl_Note);
+            this.Controls.Add(this.lbl_Changeid);
+            this.Controls.Add(this.txt_Changeid);
+            this.Controls.Add(this.lbl_Apppath);
+            this.Controls.Add(this.lbl_Application);
+            this.Controls.Add(this.btn_Viewevidence_rep);
+            this.Controls.Add(this.btn_Saveevidence_rep);
+            this.Controls.Add(this.txt_Apppath);
+            this.Controls.Add(this.btn_Createevidence_rep);
             this.Controls.Add(this.menuStrip1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MainMenuStrip = this.menuStrip1;
@@ -263,7 +264,6 @@ namespace Release_Manager
             this.Name = "Form1";
             this.Text = "Release Manager tool";
             this.Load += new System.EventHandler(this.Form1_Load);
-            this.MouseClick += new System.Windows.Forms.MouseEventHandler(this.ClearStatusBoxTextWhenClicked);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             this.ResumeLayout(false);
@@ -273,17 +273,17 @@ namespace Release_Manager
 
         #endregion
 
-        private System.Windows.Forms.Button button1;
-        private System.Windows.Forms.TextBox textBox1;
-        private System.Windows.Forms.Button button2;
-        private System.Windows.Forms.Button button3;
-        private System.Windows.Forms.ComboBox comboBox1;
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.TextBox textBox2;
-        private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.TextBox textBox3;
+        private System.Windows.Forms.Button btn_Createevidence_rep;
+        private System.Windows.Forms.TextBox txt_Apppath;
+        private System.Windows.Forms.Button btn_Saveevidence_rep;
+        private System.Windows.Forms.Button btn_Viewevidence_rep;
+        private System.Windows.Forms.ComboBox cbo_App;
+        private System.Windows.Forms.Label lbl_Application;
+        private System.Windows.Forms.Label lbl_Apppath;
+        private System.Windows.Forms.TextBox txt_Changeid;
+        private System.Windows.Forms.Label lbl_Changeid;
+        private System.Windows.Forms.Label lbl_Note;
+        private System.Windows.Forms.TextBox txt_Note;
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem settingsToolStripMenuItem;
