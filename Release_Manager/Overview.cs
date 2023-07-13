@@ -13,13 +13,13 @@ using Serilog;
 
 namespace Release_Manager
 {
-    public partial class Form2 : Form
+    public partial class Overview : Form
     {
         RecordsManager rm;
         private readonly ILogger _logger = new SerilogClass().logger;
 
 
-        public Form2(FileScanner.RecordsManager rmData)
+        public Overview(FileScanner.RecordsManager rmData)
         {   
             InitializeComponent();
             rm = rmData;

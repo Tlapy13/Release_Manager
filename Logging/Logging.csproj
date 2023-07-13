@@ -54,6 +54,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="EmailNotifier.cs" />
     <Compile Include="SerilogClass.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

@@ -56,7 +56,6 @@
             this.Logs = new System.Windows.Forms.Button();
             this.configPathDialog = new System.Windows.Forms.OpenFileDialog();
             this.solutionPathBrowserDialog = new System.Windows.Forms.FolderBrowserDialog();
-            this.BrowseXMLsFolder = new System.Windows.Forms.Button();
             this.label5 = new System.Windows.Forms.Label();
             this.xmlPathTextBox = new System.Windows.Forms.TextBox();
             this.xmlPathBrowserDialog = new System.Windows.Forms.FolderBrowserDialog();
@@ -65,6 +64,14 @@
             this.label6 = new System.Windows.Forms.Label();
             this.reportPathTextBox = new System.Windows.Forms.TextBox();
             this.reportPathBrowserDialog = new System.Windows.Forms.FolderBrowserDialog();
+            this.label7 = new System.Windows.Forms.Label();
+            this.senderTextbox = new System.Windows.Forms.TextBox();
+            this.label8 = new System.Windows.Forms.Label();
+            this.recipientTextbox = new System.Windows.Forms.TextBox();
+            this.label10 = new System.Windows.Forms.Label();
+            this.label14 = new System.Windows.Forms.Label();
+            this.smtpTextbox = new System.Windows.Forms.TextBox();
+            this.userNotificationCheckbox = new System.Windows.Forms.CheckBox();
             this.solutionNameDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.solutionPathDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.solutionsConfigBindingSource = new System.Windows.Forms.BindingSource(this.components);
@@ -86,13 +93,13 @@
             this.label3.AutoSize = true;
             this.label3.Location = new System.Drawing.Point(12, 42);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(68, 13);
+            this.label3.Size = new System.Drawing.Size(77, 13);
             this.label3.TabIndex = 9;
-            this.label3.Text = "Folder name:";
+            this.label3.Text = "Solution name:";
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(326, 403);
+            this.button1.Location = new System.Drawing.Point(326, 547);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(109, 23);
             this.button1.TabIndex = 10;
@@ -102,7 +109,7 @@
             // 
             // cancel
             // 
-            this.cancel.Location = new System.Drawing.Point(441, 403);
+            this.cancel.Location = new System.Drawing.Point(441, 547);
             this.cancel.Name = "cancel";
             this.cancel.Size = new System.Drawing.Size(109, 23);
             this.cancel.TabIndex = 11;
@@ -112,7 +119,7 @@
             // 
             // button3
             // 
-            this.button3.Location = new System.Drawing.Point(556, 403);
+            this.button3.Location = new System.Drawing.Point(556, 547);
             this.button3.Name = "button3";
             this.button3.Size = new System.Drawing.Size(109, 23);
             this.button3.TabIndex = 12;
@@ -285,16 +292,16 @@
             // statusBox
             // 
             this.statusBox.BackColor = System.Drawing.SystemColors.Info;
-            this.statusBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.statusBox.Location = new System.Drawing.Point(16, 434);
+            this.statusBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.statusBox.Location = new System.Drawing.Point(11, 576);
             this.statusBox.Name = "statusBox";
             this.statusBox.ReadOnly = true;
-            this.statusBox.Size = new System.Drawing.Size(649, 13);
+            this.statusBox.Size = new System.Drawing.Size(654, 20);
             this.statusBox.TabIndex = 35;
             // 
             // Logs
             // 
-            this.Logs.Location = new System.Drawing.Point(95, 403);
+            this.Logs.Location = new System.Drawing.Point(92, 547);
             this.Logs.Name = "Logs";
             this.Logs.Size = new System.Drawing.Size(109, 23);
             this.Logs.TabIndex = 36;
@@ -302,20 +309,10 @@
             this.Logs.UseVisualStyleBackColor = true;
             this.Logs.Click += new System.EventHandler(this.OpenLogsFolder);
             // 
-            // BrowseXMLsFolder
-            // 
-            this.BrowseXMLsFolder.Location = new System.Drawing.Point(556, 325);
-            this.BrowseXMLsFolder.Name = "BrowseXMLsFolder";
-            this.BrowseXMLsFolder.Size = new System.Drawing.Size(109, 20);
-            this.BrowseXMLsFolder.TabIndex = 39;
-            this.BrowseXMLsFolder.Text = "Browse";
-            this.BrowseXMLsFolder.UseVisualStyleBackColor = true;
-            this.BrowseXMLsFolder.Click += new System.EventHandler(this.SelectXMLPath);
-            // 
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(12, 327);
+            this.label5.Location = new System.Drawing.Point(12, 301);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(78, 13);
             this.label5.TabIndex = 38;
@@ -325,14 +322,14 @@
             // 
             this.xmlPathTextBox.BackColor = System.Drawing.SystemColors.Window;
             this.xmlPathTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.xmlPathTextBox.Location = new System.Drawing.Point(95, 325);
+            this.xmlPathTextBox.Location = new System.Drawing.Point(95, 299);
             this.xmlPathTextBox.Name = "xmlPathTextBox";
-            this.xmlPathTextBox.Size = new System.Drawing.Size(455, 20);
+            this.xmlPathTextBox.Size = new System.Drawing.Size(570, 20);
             this.xmlPathTextBox.TabIndex = 37;
             // 
             // BrowseReportFolder
             // 
-            this.BrowseReportFolder.Location = new System.Drawing.Point(556, 299);
+            this.BrowseReportFolder.Location = new System.Drawing.Point(556, 325);
             this.BrowseReportFolder.Name = "BrowseReportFolder";
             this.BrowseReportFolder.Size = new System.Drawing.Size(109, 20);
             this.BrowseReportFolder.TabIndex = 42;
@@ -343,7 +340,7 @@
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(12, 301);
+            this.label6.Location = new System.Drawing.Point(12, 327);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(66, 13);
             this.label6.TabIndex = 41;
@@ -353,16 +350,93 @@
             // 
             this.reportPathTextBox.BackColor = System.Drawing.SystemColors.Window;
             this.reportPathTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.reportPathTextBox.Location = new System.Drawing.Point(95, 299);
+            this.reportPathTextBox.Location = new System.Drawing.Point(95, 325);
             this.reportPathTextBox.Name = "reportPathTextBox";
             this.reportPathTextBox.Size = new System.Drawing.Size(455, 20);
             this.reportPathTextBox.TabIndex = 40;
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(9, 471);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(44, 13);
+            this.label7.TabIndex = 56;
+            this.label7.Text = "Sender:";
+            // 
+            // senderTextbox
+            // 
+            this.senderTextbox.BackColor = System.Drawing.SystemColors.Window;
+            this.senderTextbox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.senderTextbox.Location = new System.Drawing.Point(92, 469);
+            this.senderTextbox.Name = "senderTextbox";
+            this.senderTextbox.Size = new System.Drawing.Size(573, 20);
+            this.senderTextbox.TabIndex = 55;
+            this.senderTextbox.Leave += new System.EventHandler(this.CheckEmailValidityInSenderTextbox);
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(9, 497);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(55, 13);
+            this.label8.TabIndex = 53;
+            this.label8.Text = "Recipient:";
+            // 
+            // recipientTextbox
+            // 
+            this.recipientTextbox.BackColor = System.Drawing.SystemColors.Window;
+            this.recipientTextbox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.recipientTextbox.Location = new System.Drawing.Point(92, 495);
+            this.recipientTextbox.Name = "recipientTextbox";
+            this.recipientTextbox.Size = new System.Drawing.Size(573, 20);
+            this.recipientTextbox.TabIndex = 52;
+            this.recipientTextbox.Leave += new System.EventHandler(this.CheckEmailValidityInRecipientTextbox);
+            // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label10.Location = new System.Drawing.Point(9, 431);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(113, 20);
+            this.label10.TabIndex = 46;
+            this.label10.Text = "E-mail settings";
+            // 
+            // label14
+            // 
+            this.label14.AutoSize = true;
+            this.label14.Location = new System.Drawing.Point(8, 523);
+            this.label14.Name = "label14";
+            this.label14.Size = new System.Drawing.Size(72, 13);
+            this.label14.TabIndex = 62;
+            this.label14.Text = "SMTP server:";
+            // 
+            // smtpTextbox
+            // 
+            this.smtpTextbox.BackColor = System.Drawing.SystemColors.Window;
+            this.smtpTextbox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.smtpTextbox.Location = new System.Drawing.Point(92, 521);
+            this.smtpTextbox.Name = "smtpTextbox";
+            this.smtpTextbox.Size = new System.Drawing.Size(573, 20);
+            this.smtpTextbox.TabIndex = 61;
+            // 
+            // userNotificationCheckbox
+            // 
+            this.userNotificationCheckbox.AutoSize = true;
+            this.userNotificationCheckbox.Location = new System.Drawing.Point(139, 435);
+            this.userNotificationCheckbox.Name = "userNotificationCheckbox";
+            this.userNotificationCheckbox.Size = new System.Drawing.Size(121, 17);
+            this.userNotificationCheckbox.TabIndex = 64;
+            this.userNotificationCheckbox.Text = "notify user via e-mail";
+            this.userNotificationCheckbox.UseVisualStyleBackColor = true;
+            this.userNotificationCheckbox.CheckedChanged += new System.EventHandler(this.UserNotificationAllowed);
             // 
             // solutionNameDataGridViewTextBoxColumn
             // 
             this.solutionNameDataGridViewTextBoxColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
             this.solutionNameDataGridViewTextBoxColumn.DataPropertyName = "SolutionName";
-            this.solutionNameDataGridViewTextBoxColumn.HeaderText = "Folder name";
+            this.solutionNameDataGridViewTextBoxColumn.HeaderText = "Solution name";
             this.solutionNameDataGridViewTextBoxColumn.Name = "solutionNameDataGridViewTextBoxColumn";
             this.solutionNameDataGridViewTextBoxColumn.Width = 150;
             // 
@@ -382,11 +456,18 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.AliceBlue;
-            this.ClientSize = new System.Drawing.Size(677, 457);
+            this.ClientSize = new System.Drawing.Size(677, 608);
+            this.Controls.Add(this.userNotificationCheckbox);
+            this.Controls.Add(this.label14);
+            this.Controls.Add(this.smtpTextbox);
+            this.Controls.Add(this.label7);
+            this.Controls.Add(this.senderTextbox);
+            this.Controls.Add(this.label8);
+            this.Controls.Add(this.recipientTextbox);
+            this.Controls.Add(this.label10);
             this.Controls.Add(this.BrowseReportFolder);
             this.Controls.Add(this.label6);
             this.Controls.Add(this.reportPathTextBox);
-            this.Controls.Add(this.BrowseXMLsFolder);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.xmlPathTextBox);
             this.Controls.Add(this.Logs);
@@ -411,6 +492,7 @@
             this.Controls.Add(this.label3);
             this.Controls.Add(this.folderNameTextbox);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.MaximizeBox = false;
             this.Name = "Settings";
             this.Text = "Release Manager Settings";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.SettingsClosed);
@@ -448,10 +530,7 @@
         private System.Windows.Forms.TextBox statusBox;
         private System.Windows.Forms.Button Logs;
         private System.Windows.Forms.OpenFileDialog configPathDialog;
-        private System.Windows.Forms.DataGridViewTextBoxColumn solutionNameDataGridViewTextBoxColumn;
-        private System.Windows.Forms.DataGridViewTextBoxColumn solutionPathDataGridViewTextBoxColumn;
         private System.Windows.Forms.FolderBrowserDialog solutionPathBrowserDialog;
-        private System.Windows.Forms.Button BrowseXMLsFolder;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.TextBox xmlPathTextBox;
         private System.Windows.Forms.FolderBrowserDialog xmlPathBrowserDialog;
@@ -460,5 +539,15 @@
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.TextBox reportPathTextBox;
         private System.Windows.Forms.FolderBrowserDialog reportPathBrowserDialog;
+        private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.TextBox senderTextbox;
+        private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.TextBox recipientTextbox;
+        private System.Windows.Forms.Label label10;
+        private System.Windows.Forms.Label label14;
+        private System.Windows.Forms.TextBox smtpTextbox;
+        private System.Windows.Forms.CheckBox userNotificationCheckbox;
+        private System.Windows.Forms.DataGridViewTextBoxColumn solutionNameDataGridViewTextBoxColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn solutionPathDataGridViewTextBoxColumn;
     }
 }

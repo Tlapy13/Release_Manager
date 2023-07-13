@@ -16,6 +16,11 @@ using Logging;
 using Microsoft.Win32;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.Window;
 using System.Diagnostics;
+using System.DirectoryServices.AccountManagement;
+using System.DirectoryServices;
+using System.Net;
+using System.Drawing.Text;
+using System.Text.RegularExpressions;
 
 namespace Release_Manager
 {
@@ -24,15 +29,22 @@ namespace Release_Manager
         private readonly ILogger _logger = new SerilogClass().logger;
         private JsonHandler jsonHandler = new JsonHandler();
         private BindingSource _bindingSource = new BindingSource();
-        Configuration configFile = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
-
-
 
         public Settings()
         {
             InitializeComponent();
             PopulateSolutionsConfigTable();
             PopulateTextBoxes();
+            if (ConfigurationManager.AppSettings["notifyUserByEmail"] == "true")
+            {
+                userNotificationCheckbox.Checked = true;
+                ChangeEmailSettingsAccessibility();
+            }
+            else
+            {
+                userNotificationCheckbox.Checked = false;
+                ChangeEmailSettingsAccessibility();
+            }
         }
 
 
@@ -42,21 +54,28 @@ namespace Release_Manager
         private void PopulateTextBoxes()
         {
             logPathTextBox.Text =
-                configFile.AppSettings.Settings["serilog:write-to:File.path"].Value;
+                ConfigurationManager.AppSettings["serilog:write-to:File.path"];
             
             configPathTextbox.Text = Path.GetFullPath(
-                configFile.AppSettings.Settings["solutions_config_path"].Value);
+                ConfigurationManager.AppSettings["solutions_config_path"]);
 
             xmlPathTextBox.Text = Path.GetFullPath(
-                configFile.AppSettings.Settings["final_xml_file_path"].Value);
+                ConfigurationManager.AppSettings["final_xml_file_path"]);
 
             reportPathTextBox.Text = Path.GetFullPath(
-                configFile.AppSettings.Settings["pdf_folder_path"].Value);
+                ConfigurationManager.AppSettings["pdf_folder_path"]);
+
+            if (ConfigurationManager.AppSettings["notifyUserByEmail"] == "true")
+                    userNotificationCheckbox.Checked = true;
+            else 
+                userNotificationCheckbox.Checked = false;
+
 
             logPathTextBox.ReadOnly = true;
             configPathTextbox.ReadOnly = true;
             xmlPathTextBox.ReadOnly = true;
             reportPathTextBox.ReadOnly = true;
+            
         }
 
         /// <summary>
@@ -120,7 +139,7 @@ namespace Release_Manager
             {
                 if (folderPathTextbox.Text != String.Empty)
                 {
-                    var record = jsonHandler.SolutionsConfigs.Single(item => item.SolutionPath == folderPathTextbox.Text);
+                    var record = jsonHandler.SolutionsConfigs.Single(item => Path.Combine(item.SolutionPath, item.SolutionName) == Path.Combine(folderPathTextbox.Text, folderNameTextbox.Text));
 
                     jsonHandler.SolutionsConfigs.Remove(record);
                     _bindingSource.Remove(record);
@@ -130,7 +149,8 @@ namespace Release_Manager
 
                     _logger.Debug($"This solution {folderNameTextbox.Text} : {folderPathTextbox.Text} was removed from JSON configuration file.");
                     folderNameTextbox.Text = String.Empty;
-                    folderPathTextbox.Text= String.Empty;
+                    folderPathTextbox.Text = String.Empty;
+                    xmlPathTextBox.Text = String.Empty;
 
                     MessageOK("Selected record has been deleted from the list.");
                 }
@@ -143,6 +163,7 @@ namespace Release_Manager
             {
                 _logger.Error($"Error encountered while attempted to delete this record: {folderNameTextbox.Text}, {folderPathTextbox.Text}. Error message: {ex.InnerException.Message}");
                 MessageError("Selected record cannot be deleted. Check log for more details.");
+                return;
             }
         }
 
@@ -157,26 +178,6 @@ namespace Release_Manager
             {
                 logPathTextBox.Text = logPathBrowserDialog.SelectedPath;
                 logPathTextBox.Text += "\\logs-.txt";
-            }
-        }
-
-        private void SelectXMLPath(Object sender, EventArgs e)
-        {
-            try
-            {
-                xmlPathDialog.Filter = "XML Files (*.xml)|*.xml";
-                DialogResult result = xmlPathDialog.ShowDialog();
-
-                if (result == DialogResult.OK)
-                {
-                    xmlPathTextBox.Text = xmlPathDialog.FileName;
-                    _logger.Debug($"This XML solution file collection is selected: {xmlPathDialog.FileName}");
-                }
-
-            }
-            catch (Exception ex)
-            {
-                _logger.Error($"XML path was not selected. See error details: {ex.InnerException.Message}");
             }
         }
 
@@ -206,8 +207,6 @@ namespace Release_Manager
                 reportPathTextBox.Text = reportPathBrowserDialog.SelectedPath;
         }
 
-
-
         /// <summary>
         /// Save changes if all paths are supplied and configuration was serialized successfully.
         /// </summary>
@@ -215,18 +214,34 @@ namespace Release_Manager
         /// <param name="e"></param>
         private void SaveChanges(Object sender, EventArgs e)
         {
-            if (
-                ChangePath("serilog:write-to:File.path", logPathTextBox) && 
-                ChangePath("solutions_config_path", configPathTextbox) &&
-                ChangePath("final_xml_file_path", xmlPathTextBox) &&
-                ChangePath("pdf_folder_path", reportPathTextBox) &&
-                jsonHandler.SerializeConfigFile())
+
+            try
             {
-                MessageOK("All changes have been saved successfully.");
-                configFile.Save();
+                Configuration configFile = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
+                if (
+                ChangePath("serilog:write-to:File.path", logPathTextBox) &&
+                ChangePath("solutions_config_path", configPathTextbox) &&
+                // ChangePath("final_xml_file_path", xmlPathTextBox) &&
+                ChangePath("pdf_folder_path", reportPathTextBox) &&
+                IsEmailAddressValid(senderTextbox.Text) &&
+                IsEmailAddressValid(recipientTextbox.Text) &&
+                jsonHandler.SerializeConfigFile())
+                {
+                    MessageOK("All changes have been saved successfully.");
+                    
+                    configFile.Save(ConfigurationSaveMode.Modified);
+                    ConfigurationManager.RefreshSection("appSettings");
+                    Properties.Settings.Default.Reload();
+
+                }
+                else
+                    MessageError("Settings change cannot be saved. See log for errors.");
             }
-            else
-                MessageError("Updated log/configuration path cannot be changed. See log for errors.");
+            catch (Exception ex)
+            {
+                _logger.Error(ex.ToString());   
+            }
+            
         }
 
         /// <summary>
@@ -239,9 +254,9 @@ namespace Release_Manager
         {
             try
             {
+                Configuration configFile = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
                 configFile.AppSettings.Settings[key].Value = box.Text;
-                configFile.Save();
-                ConfigurationManager.RefreshSection(configFile.AppSettings.SectionInformation.Name);
+
 
                 statusBox.ForeColor = Color.Green;
                 statusBox.Text = "Log/configuration/xml path has been updated.";
@@ -250,17 +265,22 @@ namespace Release_Manager
                     _logger.Debug($"This is current log path: {box.Text}.\n");
                 else if (box.Name == "configPathTextbox")
                     _logger.Debug($"This is current solution config path: {box.Text}.\n");
+                else if (box.Name == "reportPathTextBox")
+                    _logger.Debug($"This is current report path: {box.Text}.\n");
                 else
                     _logger.Debug($"This is XML final file path: {box.Text}.\n");
+
+                configFile.Save();
+                ConfigurationManager.RefreshSection("appSettings");
+                Properties.Settings.Default.Reload();
                 return true;
             }
             catch (Exception ex)
             {
-                _logger.Error($"Log path was not changed. See error details: {ex.InnerException.Message}");
+                _logger.Error($"Log path was not changed. See error details: {ex}");
                 return false;
             }
         }
-
 
         /// <summary>
         /// Store selected solution path and filename to textbox.
@@ -279,6 +299,7 @@ namespace Release_Manager
                     folderPathTextbox.Text = Path.GetDirectoryName(solutionPathBrowserDialog.SelectedPath);
                     folderNameTextbox.Text = Path.GetFileName(solutionPathBrowserDialog.SelectedPath);
                 }
+                UpdateXmlFinalPathTextbox();
             }
             catch (Exception ex)
             {
@@ -292,6 +313,7 @@ namespace Release_Manager
             folderPathTextbox.Text = dataGridView1.CurrentRow.Cells[1].Value.ToString();
             folderNameTextbox.ReadOnly = true;
             folderPathTextbox.ReadOnly = true;
+            UpdateXmlFinalPathTextbox();
         }
 
         private void ClearStatusBoxTextWhenClicked(Object sender, MouseEventArgs e)
@@ -310,14 +332,17 @@ namespace Release_Manager
             {
                 logPathTextBox.Text = "C:\\Logs\\Release_Manager-.txt";
                 configPathTextbox.Text = Directory.GetCurrentDirectory() + "\\solutions_config.json";
-                xmlPathTextBox.Text = Directory.GetCurrentDirectory() + "\\xml\\final.xml";
-                reportPathTextBox.Text = Directory.GetCurrentDirectory() + "\\reports"; 
+                xmlPathTextBox.Text = Directory.GetCurrentDirectory() + "\\xml";
+                reportPathTextBox.Text = Directory.GetCurrentDirectory() + "\\reports";
+                senderTextbox.Text = UserPrincipal.Current.EmailAddress;
+                recipientTextbox.Text = "abc@appension.dk";
+                smtpTextbox.Text = "outlook.appension.dk";
 
                 _bindingSource.Clear();
                 dataGridView1.DataSource = _bindingSource;
                 jsonHandler.SolutionsConfigs.Clear();
 
-                new Form1().AddDummyDataToSolutionsConfigs(jsonHandler);
+                new Main().AddDummyDataToSolutionsConfigs(jsonHandler);
                 PopulateSolutionsConfigTable();
 
 
@@ -327,9 +352,9 @@ namespace Release_Manager
                     _logger.Debug("Log directory re-created at C:\\Logs");
                 }
 
-                if (!File.Exists(xmlPathTextBox.Text))
+                if (!Directory.Exists(xmlPathTextBox.Text))
                 {
-                    File.Create(xmlPathTextBox.Text);
+                    Directory.CreateDirectory(xmlPathTextBox.Text);
                 }
 
                 _logger.Debug($"JSON Solution configuration file renewed and stored at {configPathTextbox.Text}");
@@ -338,18 +363,20 @@ namespace Release_Manager
                 ChangePath("solutions_config_path", configPathTextbox);
                 ChangePath("final_xml_file_path", xmlPathTextBox);
                 ChangePath("pdf_folder_path", reportPathTextBox);
-                configFile.Save();
+                ChangePath("report_sender", senderTextbox);
+                ChangePath("report_recipient", recipientTextbox);
+                ChangePath("smtphost", smtpTextbox);
+
+
 
                 _logger.Debug("Application settings resetted.");
                 MessageOK("Application settings resetted.");
-
-
             }
             catch (Exception ex)
 
             {
                 _logger.Error($"JSON configuration backup file not found, it must be probably deleted or moved. Add JSON file manually to app folder.\r\n" +
-                    $"See also error message detail: {ex.Message}, {ex.InnerException.Message}");
+                    $"See also error message detail: {ex}");
                 MessageError("Reset cannot be executed - missing or corrupted JSON configuration file in application folder.");
                 return;
             }
@@ -385,12 +412,24 @@ namespace Release_Manager
         public delegate void CustomFormClosedHandler(object sender, FormClosedEventArgs e);
         public event CustomFormClosedHandler CustomFormClosed;
 
+        /// <summary>
+        /// Pass feedback to parent window. When Settings windows is closed, final XML path is set to folder path.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void SettingsClosed(object sender, FormClosedEventArgs e)
         {
+            string xmlFinalDirectory = new DirectoryInfo(Path.GetFullPath(ConfigurationManager.AppSettings["final_xml_file_path"])).FullName;
+            
+            Configuration configFile = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
+            configFile.AppSettings.Settings["final_xml_file_path"].Value = xmlFinalDirectory;
+            configFile.Save();
+            ConfigurationManager.RefreshSection("appSettings");
+            Properties.Settings.Default.Reload();
+
             CustomFormClosed(sender, e);
         }
         
-
         private void MessageOK (string message)
         {
             statusBox.ForeColor = Color.Green;
@@ -402,7 +441,95 @@ namespace Release_Manager
             statusBox.ForeColor = Color.Red;
             statusBox.Text = message;
         }
+
+        private void UserNotificationAllowed(Object sender, EventArgs e)
+        {
+            ChangeEmailSettingsAccessibility();
+        }
+
+        private void ChangeEmailSettingsAccessibility()
+        {
+            if (userNotificationCheckbox.Checked)
+            {
+                senderTextbox.Text = ConfigurationManager.AppSettings["report_sender"];
+                recipientTextbox.Text = ConfigurationManager.AppSettings["report_recipient"];
+                smtpTextbox.Text = ConfigurationManager.AppSettings["smtphost"];
+
+                senderTextbox.ReadOnly = false;
+                recipientTextbox.ReadOnly = false;
+                smtpTextbox.ReadOnly = false;
+
+                senderTextbox.BackColor = System.Drawing.SystemColors.Window;
+                recipientTextbox.BackColor = System.Drawing.SystemColors.Window;
+                smtpTextbox.BackColor = System.Drawing.SystemColors.Window;
+
+                Configuration configFile = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
+                configFile.AppSettings.Settings["notifyUserByEmail"].Value = "true";
+                configFile.Save();
+                ConfigurationManager.RefreshSection("appSettings");
+                Properties.Settings.Default.Reload();
+            }
+            else
+            {
+                senderTextbox.ReadOnly = true;
+                recipientTextbox.ReadOnly = true;
+                smtpTextbox.ReadOnly = true;
+
+                senderTextbox.Text = String.Empty;
+                recipientTextbox.Text = String.Empty;
+                smtpTextbox.Text = String.Empty;
+
+                senderTextbox.BackColor = System.Drawing.SystemColors.InactiveCaption;
+                recipientTextbox.BackColor = System.Drawing.SystemColors.InactiveCaption;
+                smtpTextbox.BackColor = System.Drawing.SystemColors.InactiveCaption;
+
+                Configuration configFile = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
+                configFile.AppSettings.Settings["notifyUserByEmail"].Value = "false";
+                configFile.Save();
+                ConfigurationManager.RefreshSection("appSettings");
+                Properties.Settings.Default.Reload();
+            }
+        }
+
+        private void CheckEmailValidityInSenderTextbox(Object sender, EventArgs e)
+        {
+            if (!IsEmailAddressValid(senderTextbox.Text))
+                MessageError("Entered sender e-mail is not valid. It has to appear in format: user-initials@appension.dk, e.g.: abc@appension.dk");
+            else
+                MessageOK("");
+
+        }
+
+        private void CheckEmailValidityInRecipientTextbox(Object sender, EventArgs e)
+        {
+            if (!IsEmailAddressValid(recipientTextbox.Text))
+                MessageError("Entered recipient e-mail is not valid. It has to appear in format: user-initials@appension.dk, e.g.: abc@appension.dk");
+            else
+                MessageOK("");
+        }
+
+        private bool IsEmailAddressValid(string email)
+        {
+            if (userNotificationCheckbox.CheckState == CheckState.Checked)
+            {
+                string pattern = @"^(?!\.)(""([^""\r\\]|\\[""\r\\])*""|"
+               + @"([-a-z0-9!#$%&'*+/=?^_`{|}~]|(?<!\.)\.)*)(?<!\.)"
+               + @"@[a-z0-9][\w\.-]*[a-z0-9]\.[a-z][a-z\.]*[a-z]$";
+
+                Regex rule = new Regex(pattern, RegexOptions.IgnoreCase);
+                bool result = rule.IsMatch(email);
+                if (!result)
+                    _logger.Debug($"Entered e-mail address - {email} - is not in correct format. Sender e-mail can only belong to appension.dk domain.");
+                return rule.IsMatch(email);
+            }
+            else
+                return true;
+           
+        }
+
+        private void UpdateXmlFinalPathTextbox()
+        {
+            xmlPathTextBox.Text = Path.GetFullPath(ConfigurationManager.AppSettings["final_xml_file_path"] + "\\" + folderNameTextbox.Text + ".xml");
+        }
     }
-
-
 }

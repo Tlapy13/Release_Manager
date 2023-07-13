@@ -23,7 +23,7 @@ namespace Release_Manager
             logger.Information("App just started, logging just began.");
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Form1());
+            Application.Run(new Main());
             
 
             //TODO: Consider to use async task for compare for better user experience

@@ -1,7 +1,7 @@
 ﻿
 namespace Release_Manager
 {
-    partial class Form2
+    partial class Overview
     {
         /// <summary>
         /// Required designer variable.
@@ -103,7 +103,7 @@ namespace Release_Manager
             this.UnchangedChk.UseVisualStyleBackColor = true;
             this.UnchangedChk.CheckedChanged += new System.EventHandler(this.UnchangedChk_CheckedChanged);
             // 
-            // Form2
+            // Overview
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;

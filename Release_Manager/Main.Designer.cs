@@ -1,7 +1,7 @@
 ﻿
 namespace Release_Manager
 {
-    partial class Form1
+    partial class Main
     {
         /// <summary>
         /// Required designer variable.
@@ -167,9 +167,9 @@ namespace Release_Manager
             this.menuStrip1.Dock = System.Windows.Forms.DockStyle.Right;
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileToolStripMenuItem});
-            this.menuStrip1.Location = new System.Drawing.Point(628, 0);
+            this.menuStrip1.Location = new System.Drawing.Point(536, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(34, 367);
+            this.menuStrip1.Size = new System.Drawing.Size(126, 362);
             this.menuStrip1.TabIndex = 11;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -183,7 +183,7 @@ namespace Release_Manager
             this.fileToolStripMenuItem.ImageAlign = System.Drawing.ContentAlignment.TopCenter;
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
             this.fileToolStripMenuItem.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.fileToolStripMenuItem.Size = new System.Drawing.Size(21, 19);
+            this.fileToolStripMenuItem.Size = new System.Drawing.Size(113, 19);
             this.fileToolStripMenuItem.Text = "...";
             this.fileToolStripMenuItem.TextAlign = System.Drawing.ContentAlignment.TopLeft;
             this.fileToolStripMenuItem.Click += new System.EventHandler(this.fileToolStripMenuItem_Click);
@@ -191,28 +191,28 @@ namespace Release_Manager
             // settingsToolStripMenuItem
             // 
             this.settingsToolStripMenuItem.Name = "settingsToolStripMenuItem";
-            this.settingsToolStripMenuItem.Size = new System.Drawing.Size(116, 22);
+            this.settingsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.settingsToolStripMenuItem.Text = "&Settings";
             this.settingsToolStripMenuItem.Click += new System.EventHandler(this.OpenSettings);
             // 
             // aboutToolStripMenuItem
             // 
             this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
-            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(116, 22);
+            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.aboutToolStripMenuItem.Text = "&About";
-            this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
+            this.aboutToolStripMenuItem.Click += new System.EventHandler(this.ShowAboutApplication);
             // 
             // toolStripMenuItem1
             // 
             this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-            this.toolStripMenuItem1.Size = new System.Drawing.Size(113, 6);
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(177, 6);
             // 
             // quitToolStripMenuItem
             // 
             this.quitToolStripMenuItem.Name = "quitToolStripMenuItem";
-            this.quitToolStripMenuItem.Size = new System.Drawing.Size(116, 22);
+            this.quitToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.quitToolStripMenuItem.Text = "&Quit";
-            this.quitToolStripMenuItem.Click += new System.EventHandler(this.quitToolStripMenuItem_Click);
+            this.quitToolStripMenuItem.Click += new System.EventHandler(this.QuitApplication);
             // 
             // contextMenuStrip1
             // 
@@ -238,12 +238,12 @@ namespace Release_Manager
             this.statusBox.Size = new System.Drawing.Size(601, 56);
             this.statusBox.TabIndex = 36;
             // 
-            // Form1
+            // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.AliceBlue;
-            this.ClientSize = new System.Drawing.Size(662, 367);
+            this.ClientSize = new System.Drawing.Size(662, 362);
             this.Controls.Add(this.statusBox);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.cbo_App);
@@ -261,9 +261,9 @@ namespace Release_Manager
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MainMenuStrip = this.menuStrip1;
             this.MaximizeBox = false;
-            this.Name = "Form1";
+            this.Name = "Main";
             this.Text = "Release Manager tool";
-            this.Load += new System.EventHandler(this.Form1_Load);
+            this.Load += new System.EventHandler(this.Main_Load);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             this.ResumeLayout(false);

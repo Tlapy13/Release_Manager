@@ -2,8 +2,10 @@
 using Serilog;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Net;
+using System.Runtime.Remoting.Messaging;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
@@ -17,32 +19,44 @@ namespace FileScanner
         public Records SavedRecords;
         public Records CurrentRecords;
         public string SolutionHash;
+        public int recordsProcessed = 0;
         private readonly ILogger _logger = new SerilogClass().logger;
 
-        public RecordsManager(string directory, string File)
+        /// <summary>
+        /// Constructor takes two collections - current check of directory files and previous check of a directory files.
+        /// </summary>
+        /// <param name="currentRecords">File collection retrieved by current check.</param>
+        /// <param name="savedRecords">File collection stored from previous check.</param>
+        public RecordsManager(string currentRecords, string savedRecords)
+        {
+            ReadRecords(currentRecords, savedRecords);
+        }
+
+        public void ReadRecords(string currentRecords, string savedRecords)
         {
             var watch = System.Diagnostics.Stopwatch.StartNew();
-            SavedRecords = Records.LoadFromXML(File);
+            SavedRecords = Records.LoadFromXML(savedRecords);
             watch.Stop();
             var elapsedTime = watch.ElapsedMilliseconds;
             _logger.Debug("Loading data for SavedRecords took: {elapsedTime} miliseconds.", elapsedTime);
 
             watch.Reset();
             watch.Start();
-             
-            CurrentRecords = Records.ReadDirectory(directory);
+
+            CurrentRecords = Records.ReadDirectory(currentRecords);
             if (CurrentRecords == null)
                 return;
-            
-            
+
             watch.Stop();
             elapsedTime = watch.ElapsedMilliseconds;
             _logger.Debug("Loading data for CurrentRecords took: {elapsedTime} miliseconds.", elapsedTime);
+        }
 
+        public void CheckRecords()
+        {
             foreach (Record currentRecord in CurrentRecords)
             {
-                Record savedRecord;
-                if (SavedRecords.TryGetValue(currentRecord, out savedRecord))
+                if (SavedRecords.TryGetValue(currentRecord, out Record savedRecord))
                 {
                     if (currentRecord.Hash != savedRecord.Hash)
                     {
@@ -51,7 +65,6 @@ namespace FileScanner
                     }
                 }
             };
-            GetSolutionHash();
         }
 
         public void SaveXML(string File)
@@ -60,7 +73,7 @@ namespace FileScanner
             _logger.Debug("Data has been saved to XML file successfully.");
         }
 
-        private void GetSolutionHash()
+        public void GetSolutionHash()
         {
             StringBuilder sb = new StringBuilder();
 

@@ -19,7 +19,7 @@ namespace FileScanner
     [Serializable]
     public class Records : HashSet<Record>, ISerializable
     {
-        private readonly ILogger _logger = new SerilogClass().logger;
+        private static readonly ILogger _logger = new SerilogClass().logger;
 
         public void SaveToXML(string file)
         {
@@ -47,7 +47,7 @@ namespace FileScanner
             Records ret = new Records();
 
             if (directory == "" || !Directory.Exists(directory))
-                ret._logger.Warning("No directory path is supplied.");
+                _logger.Warning("No directory path is supplied.");
             else
             {
                 string[] entries = Directory.EnumerateFiles(directory, "*", SearchOption.AllDirectories).ToArray();
@@ -87,7 +87,7 @@ namespace FileScanner
                     }
                     catch (Exception ex)
                     {
-                        ret._logger.Error($"Unable to process file due to file name length exceeding 255 characters." +
+                        _logger.Error($"Unable to process file due to file name length exceeding 255 characters." +
                             $"\r\nFile name contains {file.Length} characters." +
                             $"\r\nSee also error: \r\n{ex.Message}");
                         return null;
