@@ -225,6 +225,9 @@ namespace Release_Manager
                 ChangePath("pdf_folder_path", reportPathTextBox) &&
                 IsEmailAddressValid(senderTextbox.Text) &&
                 IsEmailAddressValid(recipientTextbox.Text) &&
+                ChangePath("report_sender", senderTextbox) &&
+                ChangePath("report_recipient", recipientTextbox) &&
+                ChangePath("smtphost", smtpTextbox) &&
                 jsonHandler.SerializeConfigFile())
                 {
                     MessageOK("All changes have been saved successfully.");
@@ -257,18 +260,24 @@ namespace Release_Manager
                 Configuration configFile = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
                 configFile.AppSettings.Settings[key].Value = box.Text;
 
-
                 statusBox.ForeColor = Color.Green;
                 statusBox.Text = "Log/configuration/xml path has been updated.";
-                
+
                 if (box.Name == "logPathTextBox")
                     _logger.Debug($"This is current log path: {box.Text}.\n");
                 else if (box.Name == "configPathTextbox")
                     _logger.Debug($"This is current solution config path: {box.Text}.\n");
                 else if (box.Name == "reportPathTextBox")
                     _logger.Debug($"This is current report path: {box.Text}.\n");
+                else if (box.Name == "recipientTextbox")
+                    _logger.Debug($"This is current recipient e-mail: {box.Text}.\n");
+                else if (box.Name == "senderTextbox")
+                    _logger.Debug($"This is current sender e-mail: {box.Text}.\n");
+                else if (box.Name == "smtpTextbox")
+                    _logger.Debug($"This is current smtp server: {box.Text}.\n");
                 else
                     _logger.Debug($"This is XML final file path: {box.Text}.\n");
+
 
                 configFile.Save();
                 ConfigurationManager.RefreshSection("appSettings");
