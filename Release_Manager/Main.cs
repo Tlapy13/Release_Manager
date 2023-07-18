@@ -110,45 +110,60 @@ namespace Release_Manager
 
         private void btn_Saveevidence_rep_Click(object sender, EventArgs e)
         {
-            try
+            DialogResult messageResult = MessageBox.Show("Do you want to save evidence report?", "Save", MessageBoxButtons.OKCancel);
+            if (messageResult == DialogResult.OK)
             {
-                Configuration configFile = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
-                string xmlFinalPath = ConfigurationManager.AppSettings["final_xml_file_path"] + $"\\{(cbo_App.SelectedItem as SolutionsConfig).SolutionName}.xml";
-                configFile.AppSettings.Settings["final_xml_file_path"].Value = xmlFinalPath;
-                configFile.Save(ConfigurationSaveMode.Modified);
-                ConfigurationManager.RefreshSection("appSettings");
-                Properties.Settings.Default.Reload();
+                using (var dialog = new System.Windows.Forms.SaveFileDialog())
+                {
+                    dialog.DefaultExt = "*.pdf";
+                    dialog.Filter = "pdf files (*.pdf)|*.pdf|All files (*.*)|*.*";
+                    DialogResult result = dialog.ShowDialog();
+                    if (result == DialogResult.OK)
+                    {
+                        string final = dialog.FileName;
 
-                StringBuilderData sd = new StringBuilderData();
-                sd.Header = "Evidence Report Created: ";
-                sd.FileName = $"{configFile.AppSettings.Settings["pdf_folder_path"].Value}\\REPORT_{DateTime.Now.ToString("dd-MM-yyyy_HH-mm-ss")}.pdf";
-                sd.ChangeId = txt_Changeid.Text;
-                sd.Note = txt_Note.Text;
-                sd.rm = _records;
 
-                PdfWriterCls pdf = new PdfWriterCls(sd);
+                        try
+                        {
+                            Configuration configFile = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
+                            string xmlFinalPath = ConfigurationManager.AppSettings["final_xml_file_path"] + $"\\{(cbo_App.SelectedItem as SolutionsConfig).SolutionName}.xml";
+                            configFile.AppSettings.Settings["final_xml_file_path"].Value = xmlFinalPath;
+                            configFile.Save(ConfigurationSaveMode.Modified);
+                            ConfigurationManager.RefreshSection("appSettings");
+                            Properties.Settings.Default.Reload();
 
-                txt_Changeid.Text = String.Empty;
-                txt_Note.Text = String.Empty;
+                            StringBuilderData sd = new StringBuilderData();
+                            sd.Header = "Evidence Report Created: ";
+                            sd.FileName = $"{configFile.AppSettings.Settings["pdf_folder_path"].Value}\\REPORT_{DateTime.Now.ToString("dd-MM-yyyy_HH-mm-ss")}.pdf";
+                            sd.ChangeId = txt_Changeid.Text;
+                            sd.Note = txt_Note.Text;
+                            sd.rm = _records;
 
-                CopyXmlDocument(ConfigurationManager.AppSettings["temporary_xml_file_path"], ConfigurationManager.AppSettings["final_xml_file_path"]);
+                            PdfWriterCls pdf = new PdfWriterCls(sd);
 
-                MessageOK("Evidence report has been generated.");
-                
-                string userCanBeNotified = $"{ConfigurationManager.AppSettings["notifyUserByEmail"]}";
-                if (userCanBeNotified == "true")
-                    NotifyUserByEmail(new Attachment(sd.FileName));
+                            txt_Changeid.Text = String.Empty;
+                            txt_Note.Text = String.Empty;
 
-                SetXmlFinalPathToDefault();
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(ex.ToString());
-                MessageError("Some error occurred while creating PDF or sending PDF attachment. Check log.");
-                return;
+                            CopyXmlDocument(ConfigurationManager.AppSettings["temporary_xml_file_path"], ConfigurationManager.AppSettings["final_xml_file_path"]);
+
+                            MessageOK("Evidence report has been generated.");
+
+                            string userCanBeNotified = $"{ConfigurationManager.AppSettings["notifyUserByEmail"]}";
+                            if (userCanBeNotified == "true")
+                                NotifyUserByEmail(new Attachment(sd.FileName));
+
+                            SetXmlFinalPathToDefault();
+                        }
+                        catch (Exception ex)
+                        {
+                            _logger.Error(ex.ToString());
+                            MessageError("Some error occurred while creating PDF or sending PDF attachment. Check log.");
+                            return;
+                        }
+                    }
+                }
             }
         }
-
         private static void CopyXmlDocument(string temp, string final)
         {
             XmlDocument document = new XmlDocument();
